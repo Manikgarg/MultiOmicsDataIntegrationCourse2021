@@ -1,5 +1,5 @@
 # Comparing different multi-omics data integration tools
- 
+
 ## Overview
 Several methods for multi-omics data integration exist, however, choosing the best method for a given dataset is still a challenge. In a recently available preprint, Laura et al.<sup>1</sup> tried to benchmark nine different data integration methods and found that the methods Integrative NMF (intNMF)<sup>2</sup> and Multiple co-inertia analysis (MCIA)<sup>3</sup> performed consistently better than other seven methods across multiple datasets tested. However, these datasets had an equal number of samples in all modalities which is not usually the case. Moreover, the datasets tested did not account for count data or binary data and had no missing values. Therefore, the aim of the project will be to assess their performance on the chronic lymphocytic leukaemia (CLL)<sup>4</sup> multi-omics dataset having unequal number of samples across different modalities, missing values and different omics data-types (such as binary mutation data as well as continuous RNA expression data) and compare its performance with the method, Multi-omics factor analysis (MOFA)<sup>5</sup>, specifically designed to account for these shortcomings.
 
@@ -19,7 +19,7 @@ get hands-on experience on performing survival analysis, pathway analysis and cl
 get hands-on experience with handling missing values
 
 ## Requirements
-Basic knowledge of R required.
+Working knowledge of R and basic understanding of maths/statistics required. 
 
 ## References
 - Cantini, Laura, et al. “Benchmarking joint multi-omics dimensionality reduction approaches for cancer study.” bioRxiv(2020).
