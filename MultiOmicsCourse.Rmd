@@ -1,0 +1,377 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Load the required packages
+```{r}
+suppressMessages(library("MultiAssayExperiment"))
+suppressMessages(library("MOFA"))
+suppressMessages(library("MOFAdata"))
+#install.packages("r.jive")
+suppressMessages(library("r.jive"))
+#BiocManager::install("omicade4")
+suppressMessages(library("omicade4"))
+#BiocManager::install("BloodCancerMultiOmics2017")
+suppressMessages(library("BloodCancerMultiOmics2017"))
+suppressMessages(library("survival"))
+suppressMessages(library("survminer"))
+suppressMessages(library("zoo"))
+suppressMessages(library("pheatmap"))
+library("fgsea", quietly = TRUE)
+#BiocManager::install("biomaRt")
+suppressMessages(library("biomaRt"))
+```
+
+```{r}
+source("./scripts/HelperForTheCourse.R")
+```
+
+Load the data
+```{r}
+data("CLL_data", package = "MOFAdata")
+data("CLL_covariates", package = "MOFAdata")
+```
+CLL_covariates only has gender and disgnosis information
+## MOFA
+
+Create MOFA object
+```{r}
+MOFAobject <- createMOFAobject(CLL_data)
+```
+
+```{r}
+MOFAobject
+```
+
+```{r}
+plotDataOverview(MOFAobject)
+```
+
+Load pre-trained MOFA model (assuming that training has already been covered in the talk)
+```{r}
+filepath <- system.file("extdata", "CLL_model.hdf5", package = "MOFAdata")
+MOFAobject <- loadModel(filepath, MOFAobject)
+```
+
+```{r}
+MOFAobject
+```
+We limit the number of factors to 10 in all the subsequent analysis.
+```{r}
+numFactors = 10
+```
+
+Extract weights and factors matrix
+```{r}
+MOFAweights <- getWeights(MOFAobject)
+```
+
+```{r}
+MOFAfactors <- getFactors(MOFAobject)
+```
+
+## Impute the data
+############# Replacing NAs with feature-wise mode in case of mutation data and feature-wise mean in case of other non-binary data ######################
+############# Or remove mutation data as imputing is too hard/dangerous ######################
+```{r}
+#To make the comparisons with MOFA, fill in the missing values with feature-wise mean
+#Participants can play around here with various imputation techniques
+CLL_data_imputed <- list("Mutations" = t(apply(CLL_data[["Mutations"]], 1, function(x) {
+  x[which(is.na(x))] <- calculateMode(x, na.rm = TRUE)
+  return(x)})))
+CLL_data_imputed[c("Drugs", "mRNA", "Methylation")] <- lapply(CLL_data[c("Drugs", "mRNA", "Methylation")], function(x) t(na.aggregate(t(x))))
+```
+
+# Note that the following sections are derived from the momix pipeline made available by Laura et al. (2020)
+
+## JIVE
+
+```{r}
+JIVEfactorization <- jive(CLL_data_imputed, rankJ=numFactors, rankA = rep(numFactors, length(CLL_data_imputed)), method = "given", conv = "default", maxiter = 100, showProgress=TRUE)
+```
+
+```{r}
+rankJV <- JIVEfactorization$rankJ;
+rankIV.v <- JIVEfactorization$rankA;
+J <- numeric(0)
+ng <- 0
+JIVEweights <- list();
+for(j in 1:length(CLL_data_imputed)){
+  J <- rbind(J,JIVEfactorization$joint[[j]]);
+  ng <- c(ng,dim(JIVEfactorization$joint[[j]])[1])
+}
+svd.o <- svd(J);
+jV <- svd.o$v %*% diag(svd.o$d);
+for(j in 1:length(CLL_data_imputed)){
+  JIVEweights[[j]] <- svd.o$u[(1+sum(ng[1:j])):sum(ng[1:j+1]),1:rankJV]; ###error in dimension
+  rownames(JIVEweights[[j]]) <- rownames(CLL_data_imputed[[j]])
+  colnames(JIVEweights[[j]]) <- paste0("LF", 1:numFactors)
+}
+names(JIVEweights) <- names(CLL_data_imputed)
+
+```  
+
+```{r}
+JIVEfactors <- jV[,1:rankJV]
+rownames(JIVEfactors) <- colnames(CLL_data_imputed[[1]])
+colnames(JIVEfactors) <- paste0("LF", 1:numFactors)
+```
+  
+## MCIA
+
+```{r}
+MCIAfactorization <- mcia(CLL_data_imputed, cia.nf = numFactors)
+```
+
+```{r}
+MCIAfactors <- as.matrix(MCIAfactorization$mcoa$SynVar)
+colnames(MCIAfactors) <- paste0("LF", 1:numFactors)
+```
+
+```{r}
+MCIAweights <- list()
+for(j in 1:length(CLL_data_imputed)){
+    MCIAweights[[j]]<-as.matrix(MCIAfactorization$mcoa$axis[1:dim(CLL_data_imputed[[j]])[1],])
+    rownames(MCIAweights[[j]])<-rownames(CLL_data_imputed[[j]])
+    colnames(MCIAweights[[j]])<-paste0("LF", 1:numFactors)
+}
+names(MCIAweights) <- names(CLL_data_imputed)
+```
+
+## Compare the results
+
+```{r}
+#plotVarianceExplained = #Would need to extract expectations of other models as well for comparison. 
+  #https://rdrr.io/bioc/MOFA/src/R/getMethods.R
+  #under function getExpectations
+  ## Get expectations in single matrix or list of matrices (for multi-view nodes)
+  ###exp <- Expectations(object)[[variable]] #Expectations function does not have a source code and only inputs MOFA object
+```
+```{r}
+#source("./MultiOmicsDataIntegrationCourse2020/scripts/HelperForTheCourse.R")
+```
+
+```{r}
+MOFA::plotVarianceExplained(MOFAobject)
+plot(JIVEfactorization)
+plot(MCIAfactorization, axes = c(1,2), sample.lab = FALSE, df.color = 1:4)
+plot(MCIAfactorization, axes = c(1,3), sample.lab = FALSE, df.color = 1:4)
+plot(MCIAfactorization, axes = c(2,3), sample.lab = FALSE, df.color = 1:4)
+```
+In case of MOFA = Along with variance explained per view, variance explained per factor per view can also be visualized.
+In case of JiVE = Only variance explained per view can be visualized
+In case of MCIA = factors = PCs, sorted by their eigen-values as we have selected the first 10 eigenvectors for this analysis. The variance explained per factor per view is not available but overall the eigen-vectors are sorted by their eigenvalues.
+
+```{r}
+library(pheatmap)
+source("./scripts/HelperForTheCourse.R")
+visualizeWeightsHeatmap(MOFAweights, 'Mutations')
+visualizeWeightsHeatmap(JIVEweights, 'Mutations')
+visualizeWeightsHeatmap(MCIAweights, 'Mutations')
+```
+
+
+```{r}
+source("./scripts/HelperForTheCourse.R")
+plotTopWeightsUsingSeparateWeightsAndFactors(metagenesList[["MCIA"]], "Mutations", factor = 7, nfeatures = 10)
+```
+
+
+
+## Benchmark 1: Sample clustering
+
+```{r}
+ggplot(data.frame(MOFAfactors)[match(rownames(survT), rownames(MOFAfactors)), ], aes(x = LF1, y = LF2, colour = factor(survT$IGHV), shape = factor(survT$trisomy12))) +
+  geom_point()
+```
+```{r}
+ggplot(data.frame(JIVEfactors)[match(rownames(survT), rownames(JIVEfactors)), ], aes(x = LF1, y = LF2, colour = factor(survT$IGHV), shape = factor(survT$trisomy12))) +
+  geom_point()
+```
+```{r}
+ggplot(data.frame(MCIAfactors)[match(rownames(survT), rownames(MCIAfactors)), ], aes(x = LF1, y = LF3, colour = factor(survT$IGHV), shape = factor(survT$trisomy12))) +
+  geom_point()
+```
+
+```{r}
+ggplot(data.frame(MCIAfactors)[match(rownames(survT), rownames(MCIAfactors)), ], aes(x = LF2, y = LF3, colour = factor(survT$IGHV), shape = factor(survT$trisomy12))) +
+  geom_point()
+```
+
+## Benchmark 2: Survival analysis
+
+```{r}
+data(lpdAll, patmeta, drugs)
+```
+
+```{r}
+survT <- extractMetadata(lpdCLL, patmeta, drugs)
+```
+
+```{r}
+source("./scripts/HelperForTheCourse.R")
+factorsList = list("MOFA" = MOFAfactors,"MCIA" = MCIAfactors, "JIVE" = JIVEfactors)
+factorsList = lapply(factorsList, function(g) {
+  indices = match(rownames(survT), rownames(g))
+  return(g[indices, ])
+})
+fp(factorsList, survT, "myPlot")
+```
+
+
+## Benchmark 3: Clinical association with IGHV
+
+```{r}
+
+```
+
+In what other ways can you benchmark these 3 different methods?
+
+## Benchmark 4: 
+
+```{r}
+metagenesList = list("MOFA" = MOFAweights,"MCIA" = MCIAweights, "JIVE" = JIVEweights)
+```
+
+Convert ENSEMBL ids to gene names
+```{r}
+# # extract all ensembl ids
+# allGenes = unique(unlist(lapply(metagenesList, function(x) rownames(x[["mRNA"]]))))
+# mart = useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
+# # get gene ids for ensembl ids
+# genSymbols = getBM(filters="ensembl_gene_id",
+#                    attributes=c("ensembl_gene_id", "hgnc_symbol"),
+#                    values=allGenes, mart=mart)
+# # select first id if more than one is present
+# genSymbols = genSymbols[!duplicated(genSymbols[,"ensembl_gene_id"]),]
+# # set rownames to ens id
+# rownames(genSymbols) = genSymbols[,"ensembl_gene_id"]
+# write.table(genSymbols, "./data/GeneSymbols.tsv", sep = "\t", col.names = TRUE, row.names = TRUE, quote = FALSE)
+```
+
+```{r}
+
+```
+
+
+```{r}
+source("./scripts/HelperForTheCourse.R")
+data("reactomeGS")
+pval.thr=pval.thr
+#pathToGeneSymbols = "./data/GeneSymbols.tsv"
+#databasePath <- "./data/c2.cp.reactome.v7.0.symbols.gmt" #REACTOME
+#databasePath <- "./data/h.all.v7.0.symbols.gmt" #Hallmarks
+#databasePath <- "./data/c5.all.v7.0.symbols.gmt" #GO
+out_bio <- biologicalComparisonModifiedWithMofaCode(metagenesList, factorsList, CLL_data, pathToFseaScript = "./scripts/FSEA.R", database = reactomeGS, pval.thr=pval.thr)
+```
+
+```{r}
+out_bio
+```
+
+```{r}
+#tiff("BioEnr_go_fig1.tiff", units="in", width=8.95, height=6.05, res=300)
+biological_analysis <- data.frame(
+    matrix(data = NA, ncol=4, nrow=0, 
+           dimnames = list(c(), c("methods", "selectivity", "nonZeroFacs", "total_pathways"))
+          ),
+    stringsAsFactors = FALSE)
+biological_analysis <- rbind(biological_analysis,
+                                data.frame(methods=rownames(out_bio), out_bio))
+
+min_nonZero = min(biological_analysis[, "nonZeroFacs"]) 
+max_nonZero = max(biological_analysis[, "nonZeroFacs"]) 
+g <- ggplot(biological_analysis, 
+            aes(x=nonZeroFacs,y=selectivity)) + 
+    geom_point(aes(colour = methods), size=5, alpha=.6, position=position_jitter(h=0, w=0.15))+ 
+    theme_bw() + 
+    scale_shape_manual(values=c(15,17,16)) + 
+    scale_color_manual(values=c('#FF00FF', '#FF6E28', '#C8961E', '#FF0000', '#0000FF', '#A0A0A0', '#48D1CC', '#00FF00')) +
+    ylim(floor(min((biological_analysis[,"selectivity"]*10)-.4)) / 10,
+         ceiling(max((biological_analysis[,"selectivity"]*10)+.2)) / 10) +
+    labs(title="Biological annotations", 
+         x="# metagenes (factors) enriched in at least one annotation") +
+    theme(plot.title = element_text(size=14,face="bold"),
+          axis.text = element_text(size=11),
+          axis.title = element_text(size=13),
+          legend.text=element_text(size=10)) +
+    ylab("Selectivity") + 
+    ylim(c(0, 1))+
+    labs(colour = "Methods", shape = "Cancer") +
+    guides(color = guide_legend(order = 1),size = guide_legend(order = 3)) + 
+    #scale_x_discrete() + scale_x_discrete(limits=min_nonZero:max_nonZero) + 
+    scale_x_discrete(limits=min_nonZero:max_nonZero, labels = c(min_nonZero:max_nonZero));
+g
+dev.off()
+```
+
+```{r}
+source("./scripts/FSEA.R")
+data("reactomeGS")
+for (methodName in names(metagenesList)){
+  gsea[[methodName]] <- runEnrichmentAnalysisUsingSeparateWeightsAndFactors(
+    metagenesList[[methodName]], factorsList[[methodName]], CLL_data,
+    view = "mRNA",
+    feature.sets = reactomeGS,
+    alpha = pval.thr)
+  
+  #plotEnrichmentBars(gsea, alpha=pval.thr)
+  
+}
+```
+
+```{r}
+# heatmap of enriched pathways per factor at 1% FDR
+# plotEnrichmentHeatmap(gsea, alpha=pval.thr)
+# plot number of enriched pathways per factor at 1% FDR
+plotEnrichmentBars(gsea[["MOFA"]], alpha=pval.thr)
+plotEnrichmentBars(gsea[["MCIA"]], alpha=pval.thr)
+plotEnrichmentBars(gsea[["JIVE"]], alpha=pval.thr)
+```
+
+
+```{r}
+source("./scripts/FSEA.R")
+interestingFactors <- 4:5
+
+fseaplots <- lapply(interestingFactors, function(factor) {
+  plotEnrichmentUsingSeparateWeightsAndFactors(
+    gsea[["MOFA"]],
+    factor = factor,
+    alpha = pval.thr,
+    max.pathways = 10 # The top number of pathways to display
+  )
+})
+
+cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
+                   ncol = 1, labels = paste("Factor", interestingFactors))
+
+fseaplots <- lapply(interestingFactors, function(factor) {
+  plotEnrichmentUsingSeparateWeightsAndFactors(
+    gsea[["MCIA"]],
+    factor = factor,
+    alpha = pval.thr,
+    max.pathways = 10 # The top number of pathways to display
+  )
+})
+
+cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
+                   ncol = 1, labels = paste("Factor", interestingFactors))
+
+interestingFactors <- c(5, 7)
+fseaplots <- lapply(interestingFactors, function(factor) {
+  plotEnrichmentUsingSeparateWeightsAndFactors(
+    gsea[["JIVE"]],
+    factor = factor,
+    alpha = pval.thr,
+    max.pathways = 10 # The top number of pathways to display
+  )
+})
+
+cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
+                   ncol = 1, labels = paste("Factor", interestingFactors))
+```
+
+
+## Filling in missing values using MOFA

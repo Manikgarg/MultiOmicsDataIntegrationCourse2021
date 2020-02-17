@@ -1,0 +1,13 @@
+name: MOC-R
+channels:
+  - conda-forge
+  - bioconda
+  - lcantini
+  - defaults
+dependencies:
+  - r-base=3.6.1
+  - bioconductor-mofa=1.2.0
+  - bioconductor-mofadata=1.2.0
+  - bioconductor-made4=1.60.0
+  - bioconductor-omicade4=1.26.0
+  - r-jive=2.1
