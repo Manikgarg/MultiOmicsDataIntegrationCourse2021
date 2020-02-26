@@ -31,6 +31,7 @@ data(lpdAll, patmeta, drugs, package = "BloodCancerMultiOmics2017")
 ```
 
 ```{r}
+source("./HelperForTheCourse.R")
 clinicalData <- extractMetadata(lpdCLL, patmeta, drugs)
 ```
 
@@ -43,14 +44,14 @@ factorsList = lapply(factorsList, function(g) {
 
 ```{r}
 save(clinicalData, file = "../results/ClinicalData.Rdata")
-save(factorsList, file = "results/UpdatedFactorsList.Rdata")
+save(factorsList, file = "../results/UpdatedFactorsList.Rdata")
 ```
 
 ```{r}
 source("../scripts/HelperForTheCourse.R")
-visualizeWeightsHeatmap(MOFAweights, 'Mutations')
-visualizeWeightsHeatmap(JIVEweights, 'Mutations')
-visualizeWeightsHeatmap(MCIAweights, 'Mutations')
+visualizeWeightsHeatmap(weightsList[["MOFA"]], 'Mutations')
+visualizeWeightsHeatmap(weightsList[["JIVE"]], 'Mutations')
+visualizeWeightsHeatmap(weightsList[["MCIA"]], 'Mutations')
 ```
 
 ```{r}
@@ -58,21 +59,34 @@ plotTopWeightsUsingSeparateWeightsAndFactors(weightsList[["MCIA"]], "Mutations",
 ```
 
 ```{r}
-ggplot(data.frame(MOFAfactors)[match(rownames(clinicalData), rownames(MOFAfactors)), ], aes(x = LF1, y = LF2, colour = factor(clinicalData$IGHV), shape = factor(clinicalData$trisomy12))) +
-  geom_point()
+IGHV <- factor(clinicalData$IGHV)
+trisomy12 <- factor(clinicalData$trisomy12)
+methodName <- "MOFA"
+ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF2, colour = IGHV, shape = trisomy12)) +
+  geom_point()+ 
+  ggtitle(methodName)
 ```
 ```{r}
-ggplot(data.frame(JIVEfactors)[match(rownames(clinicalData), rownames(JIVEfactors)), ], aes(x = LF1, y = LF2, colour = factor(clinicalData$IGHV), shape = factor(clinicalData$trisomy12))) +
-  geom_point()
-```
-```{r}
-ggplot(data.frame(MCIAfactors)[match(rownames(clinicalData), rownames(MCIAfactors)), ], aes(x = LF1, y = LF3, colour = factor(clinicalData$IGHV), shape = factor(clinicalData$trisomy12))) +
-  geom_point()
+methodName <- "JIVE"
+ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF3, colour = IGHV, shape = trisomy12)) +
+  geom_point()+ 
+  ggtitle(methodName)
 ```
 
 ```{r}
-ggplot(data.frame(MCIAfactors)[match(rownames(clinicalData), rownames(MCIAfactors)), ], aes(x = LF2, y = LF3, colour = factor(clinicalData$IGHV), shape = factor(clinicalData$trisomy12))) +
-  geom_point()
+methodName <- "MCIA"
+ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF2, colour = IGHV, shape = trisomy12)) +
+  geom_point()+ 
+  ggtitle(methodName)
 ```
 
+```{r}
+methodName <- "MOFA"
+ggplot(data.frame(factorsList[[methodName]]), aes(x = LF2, y = LF3, colour = IGHV, shape = trisomy12)) +
+  geom_point()+ 
+  ggtitle(methodName)
+```
 
+```{r}
+sessionInfo()
+```
