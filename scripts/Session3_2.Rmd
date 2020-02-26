@@ -107,6 +107,8 @@ cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
                    ncol = 1, labels = paste("Factor", interestingFactors))
 ```
 
+#### Question: Explore the pathways associated with other factors and see how many shared pathways are found between different methods as well as within different factors for each method?
+
 We observe that some of the factors are not associated with any biological pathway at all. We also observe that some factors are associated with common biological pathways, thereby, suggesting that factors are not capturing distinct biological information.
 
 ### Perform selectivity analysis
@@ -126,7 +128,7 @@ out_bio <- biologicalComparisonModifiedWithMofaCode(weightsList, factorsList, CL
 out_bio
 ```
 
-#### Question: Which method has more independent factors in terms of biological annotations?
+#### Question: Which method has more non-zero factors without compromising for selectivity?
 
 #### Plot the results
 ```{r}
