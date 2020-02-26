@@ -18,7 +18,7 @@ suppressMessages(library("survival"))
 suppressMessages(library("survminer"))
 suppressMessages(library("zoo"))
 suppressMessages(library("pheatmap"))
-library("fgsea", quietly = TRUE)
+suppressMessages(library("fgsea", quietly = TRUE))
 #BiocManager::install("biomaRt")
 suppressMessages(library("biomaRt"))
 ```
@@ -33,6 +33,7 @@ data("CLL_data", package = "MOFAdata")
 data("CLL_covariates", package = "MOFAdata")
 ```
 CLL_covariates only has gender and disgnosis information
+
 ## MOFA
 
 Create MOFA object
@@ -142,17 +143,6 @@ names(MCIAweights) <- names(CLL_data_imputed)
 ## Compare the results
 
 ```{r}
-#plotVarianceExplained = #Would need to extract expectations of other models as well for comparison. 
-  #https://rdrr.io/bioc/MOFA/src/R/getMethods.R
-  #under function getExpectations
-  ## Get expectations in single matrix or list of matrices (for multi-view nodes)
-  ###exp <- Expectations(object)[[variable]] #Expectations function does not have a source code and only inputs MOFA object
-```
-```{r}
-#source("./MultiOmicsDataIntegrationCourse2020/scripts/HelperForTheCourse.R")
-```
-
-```{r}
 MOFA::plotVarianceExplained(MOFAobject)
 plot(JIVEfactorization)
 plot(MCIAfactorization, axes = c(1,2), sample.lab = FALSE, df.color = 1:4)
@@ -163,6 +153,8 @@ In case of MOFA = Along with variance explained per view, variance explained per
 In case of JiVE = Only variance explained per view can be visualized
 In case of MCIA = factors = PCs, sorted by their eigen-values as we have selected the first 10 eigenvectors for this analysis. The variance explained per factor per view is not available but overall the eigen-vectors are sorted by their eigenvalues.
 
+## Benchmark 1: Clinical association with IGHV and trisomy 12
+
 ```{r}
 library(pheatmap)
 source("./scripts/HelperForTheCourse.R")
@@ -171,15 +163,30 @@ visualizeWeightsHeatmap(JIVEweights, 'Mutations')
 visualizeWeightsHeatmap(MCIAweights, 'Mutations')
 ```
 
+```{r}
+metagenesList = list("MOFA" = MOFAweights,"MCIA" = MCIAweights, "JIVE" = JIVEweights)
+```
 
 ```{r}
 source("./scripts/HelperForTheCourse.R")
 plotTopWeightsUsingSeparateWeightsAndFactors(metagenesList[["MCIA"]], "Mutations", factor = 7, nfeatures = 10)
 ```
 
+```{r}
+data(lpdAll, patmeta, drugs, package = "BloodCancerMultiOmics2017")
+```
 
+```{r}
+survT <- extractMetadata(lpdCLL, patmeta, drugs)
+```
 
-## Benchmark 1: Sample clustering
+```{r}
+factorsList = list("MOFA" = MOFAfactors,"MCIA" = MCIAfactors, "JIVE" = JIVEfactors)
+factorsList = lapply(factorsList, function(g) {
+  indices = match(rownames(survT), rownames(g))
+  return(g[indices, ])
+})
+```
 
 ```{r}
 ggplot(data.frame(MOFAfactors)[match(rownames(survT), rownames(MOFAfactors)), ], aes(x = LF1, y = LF2, colour = factor(survT$IGHV), shape = factor(survT$trisomy12))) +
@@ -199,66 +206,12 @@ ggplot(data.frame(MCIAfactors)[match(rownames(survT), rownames(MCIAfactors)), ],
   geom_point()
 ```
 
-## Benchmark 2: Survival analysis
-
-```{r}
-data(lpdAll, patmeta, drugs)
-```
-
-```{r}
-survT <- extractMetadata(lpdCLL, patmeta, drugs)
-```
-
-```{r}
-source("./scripts/HelperForTheCourse.R")
-factorsList = list("MOFA" = MOFAfactors,"MCIA" = MCIAfactors, "JIVE" = JIVEfactors)
-factorsList = lapply(factorsList, function(g) {
-  indices = match(rownames(survT), rownames(g))
-  return(g[indices, ])
-})
-fp(factorsList, survT, "myPlot")
-```
-
-
-## Benchmark 3: Clinical association with IGHV
-
-```{r}
-
-```
-
-In what other ways can you benchmark these 3 different methods?
-
-## Benchmark 4: 
-
-```{r}
-metagenesList = list("MOFA" = MOFAweights,"MCIA" = MCIAweights, "JIVE" = JIVEweights)
-```
-
-Convert ENSEMBL ids to gene names
-```{r}
-# # extract all ensembl ids
-# allGenes = unique(unlist(lapply(metagenesList, function(x) rownames(x[["mRNA"]]))))
-# mart = useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
-# # get gene ids for ensembl ids
-# genSymbols = getBM(filters="ensembl_gene_id",
-#                    attributes=c("ensembl_gene_id", "hgnc_symbol"),
-#                    values=allGenes, mart=mart)
-# # select first id if more than one is present
-# genSymbols = genSymbols[!duplicated(genSymbols[,"ensembl_gene_id"]),]
-# # set rownames to ens id
-# rownames(genSymbols) = genSymbols[,"ensembl_gene_id"]
-# write.table(genSymbols, "./data/GeneSymbols.tsv", sep = "\t", col.names = TRUE, row.names = TRUE, quote = FALSE)
-```
-
-```{r}
-
-```
-
+## Benchmark 2: Association with biological annotations
 
 ```{r}
 source("./scripts/HelperForTheCourse.R")
 data("reactomeGS")
-pval.thr=pval.thr
+pval.thr=0.05
 #pathToGeneSymbols = "./data/GeneSymbols.tsv"
 #databasePath <- "./data/c2.cp.reactome.v7.0.symbols.gmt" #REACTOME
 #databasePath <- "./data/h.all.v7.0.symbols.gmt" #Hallmarks
@@ -288,8 +241,8 @@ g <- ggplot(biological_analysis,
     theme_bw() + 
     scale_shape_manual(values=c(15,17,16)) + 
     scale_color_manual(values=c('#FF00FF', '#FF6E28', '#C8961E', '#FF0000', '#0000FF', '#A0A0A0', '#48D1CC', '#00FF00')) +
-    ylim(floor(min((biological_analysis[,"selectivity"]*10)-.4)) / 10,
-         ceiling(max((biological_analysis[,"selectivity"]*10)+.2)) / 10) +
+    #ylim(floor(min((biological_analysis[,"selectivity"]*10)-.4)) / 10,
+    #     ceiling(max((biological_analysis[,"selectivity"]*10)+.2)) / 10) +
     labs(title="Biological annotations", 
          x="# metagenes (factors) enriched in at least one annotation") +
     theme(plot.title = element_text(size=14,face="bold"),
@@ -303,14 +256,15 @@ g <- ggplot(biological_analysis,
     #scale_x_discrete() + scale_x_discrete(limits=min_nonZero:max_nonZero) + 
     scale_x_discrete(limits=min_nonZero:max_nonZero, labels = c(min_nonZero:max_nonZero));
 g
-dev.off()
+#dev.off()
 ```
 
 ```{r}
 source("./scripts/FSEA.R")
 data("reactomeGS")
+gseaResults = list()
 for (methodName in names(metagenesList)){
-  gsea[[methodName]] <- runEnrichmentAnalysisUsingSeparateWeightsAndFactors(
+  gseaResults[[methodName]] <- runEnrichmentAnalysisUsingSeparateWeightsAndFactors(
     metagenesList[[methodName]], factorsList[[methodName]], CLL_data,
     view = "mRNA",
     feature.sets = reactomeGS,
@@ -325,9 +279,9 @@ for (methodName in names(metagenesList)){
 # heatmap of enriched pathways per factor at 1% FDR
 # plotEnrichmentHeatmap(gsea, alpha=pval.thr)
 # plot number of enriched pathways per factor at 1% FDR
-plotEnrichmentBars(gsea[["MOFA"]], alpha=pval.thr)
-plotEnrichmentBars(gsea[["MCIA"]], alpha=pval.thr)
-plotEnrichmentBars(gsea[["JIVE"]], alpha=pval.thr)
+plotEnrichmentBars(gseaResults[["MOFA"]], alpha=pval.thr)
+plotEnrichmentBars(gseaResults[["MCIA"]], alpha=pval.thr)
+plotEnrichmentBars(gseaResults[["JIVE"]], alpha=pval.thr)
 ```
 
 
@@ -337,7 +291,7 @@ interestingFactors <- 4:5
 
 fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
-    gsea[["MOFA"]],
+    gseaResults[["MOFA"]],
     factor = factor,
     alpha = pval.thr,
     max.pathways = 10 # The top number of pathways to display
@@ -349,7 +303,7 @@ cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
 
 fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
-    gsea[["MCIA"]],
+    gseaResults[["MCIA"]],
     factor = factor,
     alpha = pval.thr,
     max.pathways = 10 # The top number of pathways to display
@@ -362,7 +316,7 @@ cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
 interestingFactors <- c(5, 7)
 fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
-    gsea[["JIVE"]],
+    gseaResults[["JIVE"]],
     factor = factor,
     alpha = pval.thr,
     max.pathways = 10 # The top number of pathways to display
@@ -373,5 +327,9 @@ cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
                    ncol = 1, labels = paste("Factor", interestingFactors))
 ```
 
+## Benchmark 3: Prediction of survival outcomes
 
-## Filling in missing values using MOFA
+```{r}
+source("./scripts/HelperForTheCourse.R")
+fp(factorsList, survT, "myPlot")
+```

@@ -342,7 +342,16 @@ biologicalComparisonModifiedWithMofaCode <- function(metagenesList, factorsList,
   return(out)
 }
 
-clusterSamples <- function(weightMatrices, factors, color_by, shape_by){
-  
-  
-}
+##Convert ENSEMBL ids to gene names
+# # extract all ensembl ids
+# allGenes = unique(unlist(lapply(metagenesList, function(x) rownames(x[["mRNA"]]))))
+# mart = useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
+# # get gene ids for ensembl ids
+# genSymbols = getBM(filters="ensembl_gene_id",
+#                    attributes=c("ensembl_gene_id", "hgnc_symbol"),
+#                    values=allGenes, mart=mart)
+# # select first id if more than one is present
+# genSymbols = genSymbols[!duplicated(genSymbols[,"ensembl_gene_id"]),]
+# # set rownames to ens id
+# rownames(genSymbols) = genSymbols[,"ensembl_gene_id"]
+# write.table(genSymbols, "./data/GeneSymbols.tsv", sep = "\t", col.names = TRUE, row.names = TRUE, quote = FALSE)
