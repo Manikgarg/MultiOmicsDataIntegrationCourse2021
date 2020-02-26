@@ -15,11 +15,10 @@ At the end of the course the participants will:
 - get hands-on experience in using three different data-integration methods
 - learn advantages and limitations of different methods
 - get an intuition of which method to apply for which kind of dataset.
-- get hands-on experience on performing survival analysis, pathway analysis and clinical association analysis as a way to assess different methods.
 - get hands-on experience with handling missing values
 
 ## Requirements
-Working knowledge of R and basic understanding of maths/statistics required. 
+Working knowledge of R, basic understanding of maths/statistics and familiarity with gene-set enrichment analysis and survival analysis required. 
 
 ## Pre-course homework
 Please read reference 1 to better understand the course. Going through references 2, 3 and 4 would be great but not required.
