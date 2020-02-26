@@ -1,0 +1,30 @@
+---
+title: "Session3_3"
+author: "Manik Garg"
+date: "26/02/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Benchmark 3: Prediction of survival outcomes
+
+```{r}
+load("../results/ClinicalData.Rdata")
+```
+
+```{r}
+load("../results/UpdatedFactorsList.Rdata")
+```
+
+```{r}
+source("../scripts/HelperForTheCourse.R")
+suppressMessages(library("survival"))
+suppressMessages(library("survminer"))
+```
+
+```{r}
+fp(factorsList, clinicalData, "myPlot")
+```

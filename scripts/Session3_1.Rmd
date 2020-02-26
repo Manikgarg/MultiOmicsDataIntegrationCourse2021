@@ -1,0 +1,78 @@
+---
+title: "Session3_1"
+author: "Manik Garg"
+date: "26/02/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Benchmark 1: Clinical association with IGHV and trisomy 12
+
+```{r}
+suppressMessages(library("MultiAssayExperiment"))
+suppressMessages(library("BloodCancerMultiOmics2017"))
+suppressMessages(library("pheatmap"))
+suppressMessages(library("ggplot2"))
+```
+
+```{r}
+load("../results/WeightsList.Rdata")
+```
+
+```{r}
+load("../results/FactorsList.Rdata")
+```
+
+```{r}
+data(lpdAll, patmeta, drugs, package = "BloodCancerMultiOmics2017")
+```
+
+```{r}
+clinicalData <- extractMetadata(lpdCLL, patmeta, drugs)
+```
+
+```{r}
+factorsList = lapply(factorsList, function(g) {
+  indices = match(rownames(clinicalData), rownames(g))
+  return(g[indices, ])
+})
+```
+
+```{r}
+save(clinicalData, file = "../results/ClinicalData.Rdata")
+save(factorsList, file = "results/UpdatedFactorsList.Rdata")
+```
+
+```{r}
+source("../scripts/HelperForTheCourse.R")
+visualizeWeightsHeatmap(MOFAweights, 'Mutations')
+visualizeWeightsHeatmap(JIVEweights, 'Mutations')
+visualizeWeightsHeatmap(MCIAweights, 'Mutations')
+```
+
+```{r}
+plotTopWeightsUsingSeparateWeightsAndFactors(weightsList[["MCIA"]], "Mutations", factor = 7, nfeatures = 10)
+```
+
+```{r}
+ggplot(data.frame(MOFAfactors)[match(rownames(clinicalData), rownames(MOFAfactors)), ], aes(x = LF1, y = LF2, colour = factor(clinicalData$IGHV), shape = factor(clinicalData$trisomy12))) +
+  geom_point()
+```
+```{r}
+ggplot(data.frame(JIVEfactors)[match(rownames(clinicalData), rownames(JIVEfactors)), ], aes(x = LF1, y = LF2, colour = factor(clinicalData$IGHV), shape = factor(clinicalData$trisomy12))) +
+  geom_point()
+```
+```{r}
+ggplot(data.frame(MCIAfactors)[match(rownames(clinicalData), rownames(MCIAfactors)), ], aes(x = LF1, y = LF3, colour = factor(clinicalData$IGHV), shape = factor(clinicalData$trisomy12))) +
+  geom_point()
+```
+
+```{r}
+ggplot(data.frame(MCIAfactors)[match(rownames(clinicalData), rownames(MCIAfactors)), ], aes(x = LF2, y = LF3, colour = factor(clinicalData$IGHV), shape = factor(clinicalData$trisomy12))) +
+  geom_point()
+```
+
+

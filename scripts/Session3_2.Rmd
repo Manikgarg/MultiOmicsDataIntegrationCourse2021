@@ -1,0 +1,148 @@
+---
+title: "Session3_2"
+author: "Manik Garg"
+date: "26/02/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Benchmark 2: Association with biological annotations
+
+```{r}
+suppressMessages(library("fgsea"))
+suppressMessages(library("ggplot2"))
+```
+
+```{r}
+source("../scripts/HelperForTheCourse.R")
+suppressMessages(library("MOFAdata"))
+```
+
+```{r}
+load("../results/WeightsList.Rdata")
+```
+
+```{r}
+load("../results/FactorsList.Rdata")
+```
+
+```{r}
+data("CLL_data", "reactomeGS", package = "MOFAdata")
+```
+
+```{r}
+pval.thr=0.05
+pathToFseaScript = "../scripts/FSEA.R"
+out_bio <- biologicalComparisonModifiedWithMofaCode(weightsList, factorsList, CLL_data, pathToFseaScript, database = reactomeGS, pval.thr=pval.thr)
+```
+
+```{r}
+out_bio
+```
+
+```{r}
+#tiff("BioEnr_go_fig1.tiff", units="in", width=8.95, height=6.05, res=300)
+biological_analysis <- data.frame(
+    matrix(data = NA, ncol=4, nrow=0, 
+           dimnames = list(c(), c("methods", "selectivity", "nonZeroFacs", "total_pathways"))
+          ),
+    stringsAsFactors = FALSE)
+biological_analysis <- rbind(biological_analysis,
+                                data.frame(methods=rownames(out_bio), out_bio))
+
+min_nonZero = min(biological_analysis[, "nonZeroFacs"]) 
+max_nonZero = max(biological_analysis[, "nonZeroFacs"]) 
+g <- ggplot(biological_analysis, 
+            aes(x=nonZeroFacs,y=selectivity)) + 
+    geom_point(aes(colour = methods), size=5, alpha=.6, position=position_jitter(h=0, w=0.15))+ 
+    theme_bw() + 
+    scale_shape_manual(values=c(15,17,16)) + 
+    scale_color_manual(values=c('#FF00FF', '#FF6E28', '#C8961E', '#FF0000', '#0000FF', '#A0A0A0', '#48D1CC', '#00FF00')) +
+    #ylim(floor(min((biological_analysis[,"selectivity"]*10)-.4)) / 10,
+    #     ceiling(max((biological_analysis[,"selectivity"]*10)+.2)) / 10) +
+    labs(title="Biological annotations", 
+         x="# weights (factors) enriched in at least one annotation") +
+    theme(plot.title = element_text(size=14,face="bold"),
+          axis.text = element_text(size=11),
+          axis.title = element_text(size=13),
+          legend.text=element_text(size=10)) +
+    ylab("Selectivity") + 
+    ylim(c(0, 1))+
+    labs(colour = "Methods", shape = "Cancer") +
+    guides(color = guide_legend(order = 1),size = guide_legend(order = 3)) + 
+    #scale_x_discrete() + scale_x_discrete(limits=min_nonZero:max_nonZero) + 
+    scale_x_discrete(limits=min_nonZero:max_nonZero, labels = c(min_nonZero:max_nonZero));
+g
+#dev.off()
+```
+
+```{r}
+source("../scripts/FSEA.R")
+data("reactomeGS")
+gseaResults = list()
+for (methodName in names(weightsList)){
+  gseaResults[[methodName]] <- runEnrichmentAnalysisUsingSeparateWeightsAndFactors(
+    weightsList[[methodName]], factorsList[[methodName]], CLL_data,
+    view = "mRNA",
+    feature.sets = reactomeGS,
+    alpha = pval.thr)
+  
+  #plotEnrichmentBars(gsea, alpha=pval.thr)
+  
+}
+```
+
+```{r}
+# heatmap of enriched pathways per factor at 1% FDR
+# plotEnrichmentHeatmap(gsea, alpha=pval.thr)
+# plot number of enriched pathways per factor at 1% FDR
+plotEnrichmentBars(gseaResults[["MOFA"]], alpha=pval.thr)
+plotEnrichmentBars(gseaResults[["MCIA"]], alpha=pval.thr)
+plotEnrichmentBars(gseaResults[["JIVE"]], alpha=pval.thr)
+```
+
+
+```{r}
+source(pathToFseaScript)
+interestingFactors <- 4:5
+
+fseaplots <- lapply(interestingFactors, function(factor) {
+  plotEnrichmentUsingSeparateWeightsAndFactors(
+    gseaResults[["MOFA"]],
+    factor = factor,
+    alpha = pval.thr,
+    max.pathways = 10 # The top number of pathways to display
+  )
+})
+
+cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
+                   ncol = 1, labels = paste("Factor", interestingFactors))
+
+fseaplots <- lapply(interestingFactors, function(factor) {
+  plotEnrichmentUsingSeparateWeightsAndFactors(
+    gseaResults[["MCIA"]],
+    factor = factor,
+    alpha = pval.thr,
+    max.pathways = 10 # The top number of pathways to display
+  )
+})
+
+cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
+                   ncol = 1, labels = paste("Factor", interestingFactors))
+
+interestingFactors <- c(5, 7)
+fseaplots <- lapply(interestingFactors, function(factor) {
+  plotEnrichmentUsingSeparateWeightsAndFactors(
+    gseaResults[["JIVE"]],
+    factor = factor,
+    alpha = pval.thr,
+    max.pathways = 10 # The top number of pathways to display
+  )
+})
+
+cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
+                   ncol = 1, labels = paste("Factor", interestingFactors))
+```
