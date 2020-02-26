@@ -33,6 +33,8 @@ source("./HelperForTheCourse.R")
 plotSurvivalAnalysisResults(factorsList, clinicalData, "myPlot")
 ```
 
+#### Question: Which method has more number of factors significantly associated with a) TTT and b) OS?
+
 ```{r}
 sessionInfo()
 ```
