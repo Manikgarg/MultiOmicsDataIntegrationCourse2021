@@ -11,21 +11,25 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Benchmark 3: Prediction of survival outcomes
 
-```{r}
-load("../results/ClinicalData.Rdata")
-```
+### Load required libraries
 
 ```{r}
-load("../results/UpdatedFactorsList.Rdata")
-```
-
-```{r}
-source("./HelperForTheCourse.R")
 suppressMessages(library("survival"))
 suppressMessages(library("survminer"))
 ```
 
+### Load required data
+
 ```{r}
+#Load the clinical data extracted in Session 3.1
+load("../results/ClinicalData.Rdata")
+#Load factors obtained for each method (truncated to match the clinical data in Session 3.1)
+load("../results/UpdatedFactorsList.Rdata")
+```
+
+### Perform survival analysis
+```{r}
+source("./HelperForTheCourse.R")
 plotSurvivalAnalysisResults(factorsList, clinicalData, "myPlot")
 ```
 
