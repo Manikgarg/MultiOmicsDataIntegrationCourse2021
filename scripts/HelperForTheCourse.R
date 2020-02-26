@@ -164,7 +164,7 @@ forest <- function(Time, endpoint, factors, survT) {
   return(res)
 }
 
-fp <- function(factorsList, survT, title) {  
+plotSurvivalAnalysis <- function(factorsList, survT, title) {  
   ttt = forest(Time="T5", endpoint="treatedAfter", factors = factorsList, survT)
   os = forest(Time="T6", endpoint="died", factors = factorsList, survT)
   

@@ -142,8 +142,6 @@ names(MCIAweights) <- names(CLL_data_imputed)
 MOFA::plotVarianceExplained(MOFAobject)
 plot(JIVEfactorization)
 plot(MCIAfactorization, axes = c(1,2), sample.lab = FALSE, df.color = 1:4)
-plot(MCIAfactorization, axes = c(1,3), sample.lab = FALSE, df.color = 1:4)
-plot(MCIAfactorization, axes = c(2,3), sample.lab = FALSE, df.color = 1:4)
 ```
 In case of MOFA => Along with variance explained per view, variance explained per factor per view can also be visualized.
 In case of JiVE => Only variance explained per view can be visualized
@@ -156,12 +154,12 @@ save(CLL_data_imputed, file = "../results/CllDataImputed.Rdata")
 ```
 
 ```{r}
-weightsList = list("MOFA" = MOFAweights,"MCIA" = MCIAweights, "JIVE" = JIVEweights)
+weightsList = list("MOFA" = MOFAweights, "JIVE" = JIVEweights, "MCIA" = MCIAweights)
 save(weightsList, file = "../results/WeightsList.Rdata")
 ```
 
 ```{r}
-factorsList = list("MOFA" = MOFAfactors,"MCIA" = MCIAfactors, "JIVE" = JIVEfactors)
+factorsList = list("MOFA" = MOFAfactors, "JIVE" = JIVEfactors, "MCIA" = MCIAfactors)
 save(factorsList, file = "../results/FactorsList.Rdata")
 ```
 

@@ -20,13 +20,13 @@ load("../results/UpdatedFactorsList.Rdata")
 ```
 
 ```{r}
-source("../scripts/HelperForTheCourse.R")
+source("./HelperForTheCourse.R")
 suppressMessages(library("survival"))
 suppressMessages(library("survminer"))
 ```
 
 ```{r}
-fp(factorsList, clinicalData, "myPlot")
+plotSurvivalAnalysis(factorsList, clinicalData, "myPlot")
 ```
 
 ```{r}
