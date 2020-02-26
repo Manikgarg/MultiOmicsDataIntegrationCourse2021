@@ -34,7 +34,7 @@ data("CLL_data", "reactomeGS", package = "MOFAdata")
 ```
 
 ```{r}
-pval.thr=0.05
+pval.thr=0.01
 pathToFseaScript = "../scripts/FSEA.R"
 out_bio <- biologicalComparisonModifiedWithMofaCode(weightsList, factorsList, CLL_data, pathToFseaScript, database = reactomeGS, pval.thr=pval.thr)
 ```
@@ -89,19 +89,17 @@ for (methodName in names(weightsList)){
     view = "mRNA",
     feature.sets = reactomeGS,
     alpha = pval.thr)
-  
-  #plotEnrichmentBars(gsea, alpha=pval.thr)
-  
 }
 ```
 
 ```{r}
-# heatmap of enriched pathways per factor at 1% FDR
-# plotEnrichmentHeatmap(gsea, alpha=pval.thr)
 # plot number of enriched pathways per factor at 1% FDR
-plotEnrichmentBars(gseaResults[["MOFA"]], alpha=pval.thr)
-plotEnrichmentBars(gseaResults[["MCIA"]], alpha=pval.thr)
-plotEnrichmentBars(gseaResults[["JIVE"]], alpha=pval.thr)
+methodName = "MOFA"
+plotEnrichmentBars(gseaResults[[methodName]], methodName, alpha=pval.thr)
+methodName = "JIVE"
+plotEnrichmentBars(gseaResults[[methodName]], methodName, alpha=pval.thr)
+methodName = "MCIA"
+plotEnrichmentBars(gseaResults[[methodName]], methodName, alpha=pval.thr)
 ```
 
 
@@ -109,21 +107,11 @@ plotEnrichmentBars(gseaResults[["JIVE"]], alpha=pval.thr)
 source(pathToFseaScript)
 interestingFactors <- 4:5
 
+methodName = "MOFA"
 fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
-    gseaResults[["MOFA"]],
-    factor = factor,
-    alpha = pval.thr,
-    max.pathways = 10 # The top number of pathways to display
-  )
-})
-
-cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
-                   ncol = 1, labels = paste("Factor", interestingFactors))
-
-fseaplots <- lapply(interestingFactors, function(factor) {
-  plotEnrichmentUsingSeparateWeightsAndFactors(
-    gseaResults[["MCIA"]],
+    gseaResults[[methodName]],
+    methodName,
     factor = factor,
     alpha = pval.thr,
     max.pathways = 10 # The top number of pathways to display
@@ -134,9 +122,11 @@ cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
                    ncol = 1, labels = paste("Factor", interestingFactors))
 
 interestingFactors <- c(5, 7)
+methodName = "JIVE"
 fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
-    gseaResults[["JIVE"]],
+    gseaResults[[methodName]],
+    methodName,
     factor = factor,
     alpha = pval.thr,
     max.pathways = 10 # The top number of pathways to display
@@ -145,4 +135,23 @@ fseaplots <- lapply(interestingFactors, function(factor) {
 
 cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
                    ncol = 1, labels = paste("Factor", interestingFactors))
+
+interestingFactors <- 4:5
+methodName = "MCIA"
+fseaplots <- lapply(interestingFactors, function(factor) {
+  plotEnrichmentUsingSeparateWeightsAndFactors(
+    gseaResults[[methodName]],
+    methodName,
+    factor = factor,
+    alpha = pval.thr,
+    max.pathways = 10 # The top number of pathways to display
+  )
+})
+
+cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
+                   ncol = 1, labels = paste("Factor", interestingFactors))
+```
+
+```{r}
+sessionInfo()
 ```

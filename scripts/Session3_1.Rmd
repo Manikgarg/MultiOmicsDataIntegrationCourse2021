@@ -81,7 +81,7 @@ ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF2, colour = IGH
 ```
 
 ```{r}
-methodName <- "MOFA"
+methodName <- "MCIA"
 ggplot(data.frame(factorsList[[methodName]]), aes(x = LF2, y = LF3, colour = IGHV, shape = trisomy12)) +
   geom_point()+ 
   ggtitle(methodName)

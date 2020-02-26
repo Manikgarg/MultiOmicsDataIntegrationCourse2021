@@ -275,7 +275,7 @@ runEnrichmentAnalysisUsingSeparateWeightsAndFactors <- function(weightList, fact
 #' # Plot top 10 enriched pathwyas on factor 5:
 #' plotEnrichment(MOFAobject, fsea.results, factor=5,  max.pathways=10)
 
-plotEnrichmentUsingSeparateWeightsAndFactors <- function(fsea.results, factor, alpha=0.1, max.pathways=25, adjust=TRUE) {
+plotEnrichmentUsingSeparateWeightsAndFactors <- function(fsea.results, methodName, factor, alpha=0.1, max.pathways=25, adjust=TRUE) {
   
   # Sanity checks
   #stopifnot(length(factor)==1) 
@@ -283,7 +283,6 @@ plotEnrichmentUsingSeparateWeightsAndFactors <- function(fsea.results, factor, a
   #if(!factor %in% colnames(fsea.results$pval)) 
   #  stop(paste0("No feature set enrichment calculated for factor ", factor, ".\n
   #              Use runEnrichmentAnalysis first."))
-  
   # get p-values
   if(adjust) p.values <- fsea.results$pval.adj else p.values <- fsea.results$pval
   
@@ -329,7 +328,8 @@ plotEnrichmentUsingSeparateWeightsAndFactors <- function(fsea.results, factor, a
       axis.title.y=element_blank(),
       legend.position='none',
       panel.background = element_blank()
-    )
+    ) + 
+    ggtitle(methodName)
   
   return(p)
 }
@@ -401,7 +401,7 @@ plotEnrichmentHeatmap <- function(fsea.results, alpha = 0.05, logScale = TRUE, .
 #' # Plot overview of number of enriched pathways per factor at an FDR of 1%
 #' plotEnrichmentBars(fsea.results, alpha=0.01)
 
-plotEnrichmentBars <- function(fsea.results, alpha = 0.05) {
+plotEnrichmentBars <- function(fsea.results, methodName, alpha = 0.05) {
   
   # Sanity checks
   if(all(fsea.results$pval.adj > alpha)) 
@@ -434,7 +434,8 @@ plotEnrichmentBars <- function(fsea.results, alpha = 0.05) {
       axis.text.y = element_text(size=rel(1.2), hjust=1, color='black'),
       axis.text.x = element_text(size=rel(1.2), vjust=0.5, color='black'),
       panel.background = element_blank()
-    )
+    ) +
+    ggtitle(methodName)
 }
 
 #' @title Plot detailed output of the Feature Set Enrichment Analysis

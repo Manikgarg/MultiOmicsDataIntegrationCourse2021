@@ -28,3 +28,7 @@ suppressMessages(library("survminer"))
 ```{r}
 fp(factorsList, clinicalData, "myPlot")
 ```
+
+```{r}
+sessionInfo()
+```
