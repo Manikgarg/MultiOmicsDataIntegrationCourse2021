@@ -52,7 +52,7 @@ save(clinicalData, file = "../results/ClinicalData.Rdata")
 save(factorsList, file = "../results/UpdatedFactorsList.Rdata")
 ```
 
-#### Visualize the weights associated with all the factors for the specified method and the specified view
+#### Visualize the weights given to each mutation by all the factors for the specified method
 
 ```{r}
 source("../scripts/HelperForTheCourse.R")
