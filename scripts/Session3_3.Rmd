@@ -26,7 +26,7 @@ suppressMessages(library("survminer"))
 ```
 
 ```{r}
-plotSurvivalAnalysis(factorsList, clinicalData, "myPlot")
+plotSurvivalAnalysisResults(factorsList, clinicalData, "myPlot")
 ```
 
 ```{r}
