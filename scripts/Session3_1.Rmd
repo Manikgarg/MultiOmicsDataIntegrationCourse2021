@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Benchmark 1: Clinical association with IGHV and trisomy 12
 
+### Load required libraries
 ```{r}
 suppressMessages(library("MultiAssayExperiment"))
 suppressMessages(library("BloodCancerMultiOmics2017"))
@@ -18,23 +19,26 @@ suppressMessages(library("pheatmap"))
 suppressMessages(library("ggplot2"))
 ```
 
+### Load the required data
 ```{r}
+# Load weights obtained from each method in Session 2.1 
 load("../results/WeightsList.Rdata")
-```
-
-```{r}
+# Load factors obtained from each method in Session 2.1 
 load("../results/FactorsList.Rdata")
 ```
 
 ```{r}
+# Load the CLL clinical data published by Dietrich et al. in the Bioconductor package BloodCancerMultiOmics2017
 data(lpdAll, patmeta, drugs, package = "BloodCancerMultiOmics2017")
 ```
 
+### Extract the relevant clinical data for this group project
 ```{r}
 source("./HelperForTheCourse.R")
 clinicalData <- extractMetadata(lpdCLL, patmeta, drugs)
 ```
 
+### Only keep those samples for which relevant clinical data is available for further analysis
 ```{r}
 factorsList = lapply(factorsList, function(g) {
   indices = match(rownames(clinicalData), rownames(g))
@@ -42,10 +46,13 @@ factorsList = lapply(factorsList, function(g) {
 })
 ```
 
+### Save the results for later use
 ```{r}
 save(clinicalData, file = "../results/ClinicalData.Rdata")
 save(factorsList, file = "../results/UpdatedFactorsList.Rdata")
 ```
+
+#### Visualize the weights associated with all the factors for the specified method and the specified view
 
 ```{r}
 source("../scripts/HelperForTheCourse.R")
@@ -54,38 +61,51 @@ visualizeWeightsHeatmap(weightsList[["JIVE"]], 'Mutations')
 visualizeWeightsHeatmap(weightsList[["MCIA"]], 'Mutations')
 ```
 
+#### Question: Looking at the heatmaps for each method, which factors are associated with IGHV and trisomy12?
+
+#### Plot top weighted mutations for a specified factor obtained from a specified method
+
+For better visualization of the ranked mutations according to their weights, individual factors can be plotted using the function below.
+
 ```{r}
-plotTopWeightsUsingSeparateWeightsAndFactors(weightsList[["MCIA"]], "Mutations", factor = 7, nfeatures = 10)
+methodName = "MOFA"
+factorNumber = 1
+nMutationsToDisplay = 10
+plotTopWeightsUsingSeparateWeightsAndFactors(weightsList[[methodName]], "Mutations", factor = factorNumber, nfeatures = nMutationsToDisplay)
 ```
+
+#### Plot sample scatter-plot
+
+To confirm whether your identified factors can successfully divide patients into two separate groups based on their IGHV and trisomy12 status, we will plot the sample scatter. 
 
 ```{r}
 IGHV <- factor(clinicalData$IGHV)
 trisomy12 <- factor(clinicalData$trisomy12)
 methodName <- "MOFA"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF2, colour = IGHV, shape = trisomy12)) +
+ggplot(data.frame(factorsList[[methodName]]), aes(x = #Your chosen factor related to IGHV
+                                                    , y = #Your chosen factor related to trisomy12
+                                                    , colour = IGHV, shape = trisomy12)) +
   geom_point()+ 
   ggtitle(methodName)
 ```
 ```{r}
 methodName <- "JIVE"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF3, colour = IGHV, shape = trisomy12)) +
+ggplot(data.frame(factorsList[[methodName]]), aes(x = #Your chosen factor related to IGHV
+                                                    , y = #Your chosen factor related to trisomy12
+                                                    , colour = IGHV, shape = trisomy12)) +
   geom_point()+ 
   ggtitle(methodName)
 ```
 
 ```{r}
 methodName <- "MCIA"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF2, colour = IGHV, shape = trisomy12)) +
+ggplot(data.frame(factorsList[[methodName]]), aes(x = #Your chosen factor related to IGHV
+                                                    , y = #Your chosen factor related to trisomy12
+                                                    , colour = IGHV, shape = trisomy12)) +
   geom_point()+ 
   ggtitle(methodName)
 ```
-
-```{r}
-methodName <- "MCIA"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = LF2, y = LF3, colour = IGHV, shape = trisomy12)) +
-  geom_point()+ 
-  ggtitle(methodName)
-```
+#### Question: Which method gives the best seperation between the patients having IGHV and trisomy12 mutations?
 
 ```{r}
 sessionInfo()
