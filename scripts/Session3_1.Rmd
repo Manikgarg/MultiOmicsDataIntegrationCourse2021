@@ -147,7 +147,6 @@ clinical_analysis <- data.frame(
 clinical_analysis <- rbind(clinical_analysis,
                                 data.frame(methods=rownames(out_clinical), out_clinical))
 
-#tiff("BioEnr_go_fig1.tiff", units="in", width=8.95, height=6.05, res=300)
 min_nonZero = min(clinical_analysis[, "nonZeroFacs"]) 
 max_nonZero = max(clinical_analysis[, "nonZeroFacs"]) 
 g <- ggplot(clinical_analysis, 
