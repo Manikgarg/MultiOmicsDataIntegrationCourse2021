@@ -6,7 +6,7 @@ Several methods for multi-omics data integration exist, however, choosing the be
 ## Dataset
 
 The CLL dataset taken from Dietrich *et al* (2018) contains the following information from 200 patients:
-<img align="right" width="200" height="200" src="./image/Chronic_lymphocytic_leukemia.jpg">
+<img align="right" width="200" height="150" src="./image/Chronic_lymphocytic_leukemia.jpg">
 - somatic mutations (69 x 200)
 - RNA expression data (5000 x 136)
 - DNA methylation (4248 x 196)
