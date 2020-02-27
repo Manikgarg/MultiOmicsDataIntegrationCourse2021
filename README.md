@@ -28,7 +28,7 @@ At the end of the course the participants will:
 - get an intuition of which method to apply for which kind of dataset.
 - get hands-on experience with handling missing values
 
-## Requirements
+## Pre-requisites
 Working knowledge of R, basic understanding of maths/statistics and familiarity with gene-set enrichment analysis and survival analysis required. 
 
 ## Pre-course homework
