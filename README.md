@@ -4,8 +4,9 @@
 Several methods for multi-omics data integration exist, however, choosing the best method for a given dataset is still a challenge. In a recently available preprint, Laura *et al* (2020)<sup>1</sup> tried to benchmark nine different data integration methods on TCGA cancer data and found that the methods Multi-omics factor analysis (MOFA)<sup>2</sup>, Multiple co-inertia analysis (MCIA)<sup>3</sup>, Joint and Individual Variation Explained (JIVE)<sup>4</sup> and Regularized Generalized Canonical Correlation Analysis (RGCCA)<sup>5</sup> performed consistently better than other five methods. However, this benchmark required matching of samples across different modalities, did not account for their performance on binary count data and did not account for the variations introduced by different imputation methods. Therefore, the aim of this project will be to benchmark the first three multi-omics data-integration methods on the [chronic lymphocytic leukaemia](https://en.wikipedia.org/wiki/Chronic_lymphocytic_leukemia) (CLL)<sup>6</sup> dataset.
 
 ## Dataset
-<img align="right" width="100" height="100" src="./image/Chronic_lymphocytic_leukemia.jpg">
+
 The CLL dataset taken from Dietrich *et al* (2018) contains the following information from 200 patients:
+<img align="right" width="100" height="100" src="./image/Chronic_lymphocytic_leukemia.jpg">
 - somatic mutations (69 x 200)
 - RNA expression data (5000 x 136)
 - DNA methylation (4248 x 196)
