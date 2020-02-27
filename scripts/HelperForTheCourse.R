@@ -7,6 +7,7 @@ calculateMode = function(x, na.rm = FALSE) {
   return(ux[which.max(tabulate(match(x, ux)))])
 }
 
+# Modified from similar function in MOFA
 visualizeWeightsHeatmap <- function(weights, view, threshold = 0){
   W = weights[[view]]
   # apply thresholding of loadings
@@ -30,6 +31,7 @@ visualizeWeightsHeatmap <- function(weights, view, threshold = 0){
            cellwidth = cellwidth)
 }
 
+# Modified from similar function in MOFA
 plotTopWeightsUsingSeparateWeightsAndFactors <- function(weights, view, factor, nfeatures = 10, abs = TRUE, scale = TRUE, sign = "both") {
   
   # Sanity checks
@@ -105,9 +107,7 @@ plotTopWeightsUsingSeparateWeightsAndFactors <- function(weights, view, factor, 
   return(p)
   }
 
-plotFactorScatterUsingSeparateWeightsAndFactors <- 
-  
-  
+# Modified from Dietrich et al. (2018) BloodCancerMultiOmics2017 vignette  
 extractMetadata <- function(lpdCLL, patmeta, drugs){
   lpdCLL <- lpdAll[ , lpdAll$Diagnosis=="CLL"   ]
   # data rearrangements
@@ -164,6 +164,7 @@ forest <- function(Time, endpoint, factors, survT) {
   return(res)
 }
 
+# Modified from Dietrich et al. (2018) BloodCancerMultiOmics2017 vignette
 plotSurvivalAnalysisResults <- function(factorsList, survT, title) {  
   ttt = forest(Time="T5", endpoint="treatedAfter", factors = factorsList, survT)
   os = forest(Time="T6", endpoint="died", factors = factorsList, survT)
@@ -246,6 +247,7 @@ plotSurvivalAnalysisResults <- function(factorsList, survT, title) {
 }
 
 
+# Modified from Cantini et al. (2020) momix pipeline
 ## Perform biological annotation-based comparison 
 ## INPUTS:
 # factorizations = already computed factirizations
@@ -342,6 +344,61 @@ biologicalComparisonModifiedWithMofaCode <- function(metagenesList, factorsList,
   return(out)
 }
 
+# Modified from Cantini et al. (2020) momix pipeline
+calculateSelectivityScoreForClinicalAnnotations <- function(factorsList, clinicalData, clinicalFeaturesOfInterest, pval.thr){
+  # Empty containers
+  line <- numeric(0)
+  line2 <- numeric(0)
+  line3 <- numeric(0)
+  
+  # For each factorization
+  for(methodName in names(factorsList)){
+    factors <- factorsList[[methodName]]
+    # Stor all p-values
+    pvalues <- numeric(0)
+    # Store number of significant annotations
+    clin_erich <- 0 
+    
+    # Test significance association with clinical annotations
+    for(j in clinicalFeaturesOfInterest){
+      
+      # Perform the analysis if there is more than one possible value in current column
+      table_values <- table(clinicalData[,j])
+      if(sum(table_values>0)>1){
+        pvalues_col <- apply(factors, MARGIN=2, 
+                             function(x) wilcox.test(x~clinicalData[,j])$p.value)
+        pvalues <- c(pvalues, pvalues_col)
+        if(min(pvalues_col)<pval.thr){
+          clin_erich <- clin_erich+1
+        }
+      }
+    }
+    # Number of clinical annotations with at least one significant p-value
+    line3 <- rbind(line3, clin_erich)
+    
+    # Total number of significant factors in all tested columns
+    column <- names(pvalues)[pvalues<pval.thr]
+    
+    # Number of unique factors that were significant at least once
+    line2<-rbind(line2, length(unique(column)))
+    
+    # Number of times a p-value was found significant
+    signif <- length(column)
+    f<-length(unique(column))   
+    
+    # Selectivity 
+    if(signif!=0){
+      line <- rbind(line,((clin_erich/signif)+(f/signif))/2)
+    }else{
+      line <- rbind(line,0)
+    }
+  }
+  
+  # Store and return results
+  out <- data.frame(selectivity=line, nonZeroFacs=line2, total_annotations=line3)
+  rownames(out) <- names(factorsList)
+  return(out)
+}
 ##Convert ENSEMBL ids to gene names
 # # extract all ensembl ids
 # allGenes = unique(unlist(lapply(metagenesList, function(x) rownames(x[["mRNA"]]))))

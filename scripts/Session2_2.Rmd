@@ -26,9 +26,7 @@ source("../scripts/HelperForTheCourse.R")
 Load the data
 ```{r}
 data("CLL_data", package = "MOFAdata")
-data("CLL_covariates", package = "MOFAdata")
 ```
-CLL_covariates only has gender and disgnosis information
 
 ## MOFA
 

@@ -110,6 +110,69 @@ ggplot(data.frame(factorsList[[methodName]]), aes(x = #Your chosen factor relate
 ```
 #### Question: Which method gives the best seperation between the patients having IGHV and trisomy12 mutations?
 
+### Perform selectivity analysis
+
+We also noticed that in JIVE, multiple factors have given highest weights to IGHV and trisomy12 status, thereby implying that the factors are capturing similar clinical information and are not exclusive to each other. To quantify the independence of each factor in representing biological information, a selectivity score was devised by Laura et al. (2020) given by:
+
+$$Selectivity\;Score = 2 (\frac{N_c+N_f}{L})$$
+
+Where N<sub>c</sub> is the total number of clinical annotations associated with atleast one factor, N<sub>f</sub> is the total number of factors accosiated with at least one clinical annotation, and L is the total number of associations between clinical anotations and factors.
+
+#### Extract the selectivity results for each method
+
+```{r}
+source("../scripts/HelperForTheCourse.R")
+```
+
+```{r}
+clinicalFeaturesOfInterest <- c("IGHV", "SF3B1", "NOTCH1", "BRAF", "TP53", "del17p13", "del11q22.3", "trisomy12")
+pval.thr <- 0.05
+out_clinical <- calculateSelectivityScoreForClinicalAnnotations(factorsList, clinicalData, clinicalFeaturesOfInterest, pval.thr)
+```
+
+```{r}
+out_clinical
+```
+
+#### Question: Which method has more non-zero factors without compromising for selectivity?
+
+#### Plot the results
+```{r}
+# Prepare the data frame
+clinical_analysis <- data.frame(
+    matrix(data = NA, ncol=4, nrow=0, 
+           dimnames = list(c(), c("methods", "selectivity", "nonZeroFacs", "total_annotations"))
+          ),
+    stringsAsFactors = FALSE)
+clinical_analysis <- rbind(clinical_analysis,
+                                data.frame(methods=rownames(out_clinical), out_clinical))
+
+#tiff("BioEnr_go_fig1.tiff", units="in", width=8.95, height=6.05, res=300)
+min_nonZero = min(clinical_analysis[, "nonZeroFacs"]) 
+max_nonZero = max(clinical_analysis[, "nonZeroFacs"]) 
+g <- ggplot(clinical_analysis, 
+            aes(x=nonZeroFacs, y=selectivity)) + 
+    geom_point(aes(colour = methods), size=5, alpha=.6, position=position_jitter(h=0, w=0.15))+ 
+    theme_bw() + 
+    #scale_shape_manual(values=c(15,17,16)) + 
+    scale_color_manual(values=c('#FF00FF', '#FF6E28', '#C8961E', '#FF0000', '#0000FF', '#A0A0A0', '#48D1CC', '#00FF00')) +
+    ylim(floor(min((clinical_analysis[,"selectivity"]*10)-.4)) / 10,
+         ceiling(max((clinical_analysis[,"selectivity"]*10)+.2)) / 10) +
+    labs(title="Clinical annotations", 
+         x="# metagenes (factors) enriched in at least one annotation") +
+    theme(plot.title = element_text(size=14,face="bold"),
+          axis.text = element_text(size=11),
+          axis.title = element_text(size=13),
+          legend.text=element_text(size=10)) +
+    ylab("Selectivity") + 
+    labs(colour = "Methods",shape="Cancer") +
+    guides(color = guide_legend(order = 1), size = guide_legend(order = 3)) + 
+    #scale_x_discrete() + scale_x_discrete(limits=min_nonZero:max_nonZero) + 
+    scale_x_discrete(limits=min_nonZero:max_nonZero, labels = c(min_nonZero:max_nonZero));
+g
+```
+
+### Print session info
 ```{r}
 sessionInfo()
 ```
