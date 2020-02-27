@@ -52,7 +52,7 @@ save(clinicalData, file = "../results/ClinicalData.Rdata")
 save(factorsList, file = "../results/UpdatedFactorsList.Rdata")
 ```
 
-#### Visualize the weights given to each mutation by all the factors for the specified method
+### Visualize the weights given to each mutation by all the factors for the specified method
 
 ```{r}
 source("../scripts/HelperForTheCourse.R")
@@ -61,11 +61,11 @@ visualizeWeightsHeatmap(weightsList[["JIVE"]], 'Mutations')
 visualizeWeightsHeatmap(weightsList[["MCIA"]], 'Mutations')
 ```
 
-#### Question: Looking at the heatmaps for each method, which factors are associated with IGHV and trisomy12?
+### Plot top weighted mutations for a specified factor obtained from a specified method
 
-#### Plot top weighted mutations for a specified factor obtained from a specified method
+For each factor of the specified method, the top weighted mutations can be viewed, thus providing a better way to identify factors associated with mutations of interest, especially when heatmaps become complex to interpret like in the case of MCIA and JIVE. 
 
-For better visualization of the ranked mutations according to their weights, individual factors can be plotted using the function below.
+For starters, lets look at MOFA factor 1 which seems to have the highest (-)ve weight for IGHV.
 
 ```{r}
 methodName = "MOFA"
@@ -73,6 +73,9 @@ factorNumber = 1
 nMutationsToDisplay = 10
 plotTopWeightsUsingSeparateWeightsAndFactors(weightsList[[methodName]], "Mutations", factor = factorNumber, nfeatures = nMutationsToDisplay)
 ```
+IGHV shows up at the top. 
+
+#### Similarly explore different factors for different methods and see which factors better associate with IGHV and trisomy12 status
 
 #### Plot sample scatter-plot
 
