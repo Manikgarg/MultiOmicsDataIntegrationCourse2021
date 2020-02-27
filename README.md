@@ -1,14 +1,22 @@
 # Comparing different multi-omics data integration tools
 
 ## Overview
-Several methods for multi-omics data integration exist, however, choosing the best method for a given dataset is still a challenge. In a recently available preprint, Laura et al.<sup>1</sup> tried to benchmark nine different data integration methods on TCGA cancer data and found that the methods Multi-omics factor analysis (MOFA)<sup>2</sup>, Multiple co-inertia analysis (MCIA)<sup>3</sup>, Joint and Individual Variation Explained (JIVE)<sup>4</sup> and Regularized Generalized Canonical Correlation Analysis (RGCCA)<sup>5</sup> performed consistently better than other five methods. However, this benchmark required matching of samples across different modalities, did not account for their performance on binary count data and did not account for the variations introduced by different imputation methods. Therefore, the aim of this project will be to benchmark the first three multi-omics data-integration methods on the chronic lymphocytic leukaemia (CLL)<sup>6</sup> dataset.
+Several methods for multi-omics data integration exist, however, choosing the best method for a given dataset is still a challenge. In a recently available preprint, Laura *et al* (2020)<sup>1</sup> tried to benchmark nine different data integration methods on TCGA cancer data and found that the methods Multi-omics factor analysis (MOFA)<sup>2</sup>, Multiple co-inertia analysis (MCIA)<sup>3</sup>, Joint and Individual Variation Explained (JIVE)<sup>4</sup> and Regularized Generalized Canonical Correlation Analysis (RGCCA)<sup>5</sup> performed consistently better than other five methods. However, this benchmark required matching of samples across different modalities, did not account for their performance on binary count data and did not account for the variations introduced by different imputation methods. Therefore, the aim of this project will be to benchmark the first three multi-omics data-integration methods on the chronic lymphocytic leukaemia (CLL)<sup>6</sup> dataset.
 
 ## Dataset
-CLL dataset contains information from 200 patients on
-- somatic mutations
-- RNA expression data
-- DNA methylation
-- ex vivo drug response
+The CLL dataset taken from Dietrich *et al* (2018) contains the following information from 200 patients:
+- somatic mutations (69 x 200)
+- RNA expression data (5000 x 136)
+- DNA methylation (4248 x 196)
+- ex vivo drug response (310 x 184)
+
+For benchmarking purposes, different methods will be assessed on their ability to
+- identify IGHV status and trisomy of chromosome 12
+- selectively identify clinical annotations
+- identify biologically meaningful pathways
+- selectively identify biological pathways
+- predict time to next treatment and overall survival 
+See MOFA<sup>2</sup> paper for more details.
 
 ## Take-away
 At the end of the course the participants will:
