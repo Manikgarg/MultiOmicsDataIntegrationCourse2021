@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Benchmark 3: Prediction of survival outcomes
 
-### Load required libraries
+### Load required packages
 
 ```{r}
 suppressMessages(library("survival"))

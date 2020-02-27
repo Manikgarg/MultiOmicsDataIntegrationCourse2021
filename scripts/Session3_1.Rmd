@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Benchmark 1: Clinical association with IGHV and trisomy 12
 
-### Load required libraries
+### Load required packages
 ```{r}
 suppressMessages(library("MultiAssayExperiment"))
 suppressMessages(library("BloodCancerMultiOmics2017"))
@@ -119,10 +119,6 @@ $$Selectivity\;Score = 2 (\frac{N_c+N_f}{L})$$
 Where N<sub>c</sub> is the total number of clinical annotations associated with atleast one factor, N<sub>f</sub> is the total number of factors accosiated with at least one clinical annotation, and L is the total number of associations between clinical anotations and factors.
 
 #### Extract the selectivity results for each method
-
-```{r}
-source("../scripts/HelperForTheCourse.R")
-```
 
 ```{r}
 clinicalFeaturesOfInterest <- c("IGHV", "SF3B1", "NOTCH1", "BRAF", "TP53", "del17p13", "del11q22.3", "trisomy12")

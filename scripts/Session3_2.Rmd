@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Benchmark 2: Association with biological annotations
 
-### Load required libraries
+### Load required packages
 ```{r}
 suppressMessages(library("fgsea"))
 suppressMessages(library("ggplot2"))

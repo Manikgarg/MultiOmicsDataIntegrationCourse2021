@@ -9,8 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Load required packages
+## Train different methods and save results
 
+### Load required packages
 ```{r}
 suppressMessages(library("MOFA"))
 suppressMessages(library("MOFAdata"))
@@ -19,19 +20,14 @@ suppressMessages(library("omicade4"))
 suppressMessages(library("zoo"))
 ```
 
-```{r}
-source("../scripts/HelperForTheCourse.R")
-```
-
-Load the data
+### Load the required data
 ```{r}
 data("CLL_data", package = "MOFAdata")
 ```
 
-## MOFA
-
-Create MOFA object
+### Visualize the data
 ```{r}
+#Create MOFA object
 MOFAobject <- createMOFAobject(CLL_data)
 ```
 
@@ -43,7 +39,9 @@ MOFAobject
 plotDataOverview(MOFAobject)
 ```
 
-Load pre-trained MOFA model (assuming that training has already been covered in the talk)
+### MOFA
+
+#### Load pre-trained MOFA model 
 ```{r}
 filepath <- system.file("extdata", "CLL_model.hdf5", package = "MOFAdata")
 MOFAobject <- loadModel(filepath, MOFAobject)
@@ -52,24 +50,28 @@ MOFAobject <- loadModel(filepath, MOFAobject)
 ```{r}
 MOFAobject
 ```
+
 We limit the number of factors to 10 in all the subsequent analysis.
 ```{r}
 numFactors = 10
 ```
 
-Extract weights and factors matrix
+#### Extract weights
 ```{r}
 MOFAweights <- getWeights(MOFAobject)
 ```
 
+#### Extract factors
 ```{r}
 MOFAfactors <- getFactors(MOFAobject)
 ```
 
-## Impute the data
+### Impute the data for rest of the analysis
 ############# Replacing NAs with feature-wise mode in case of mutation data and feature-wise mean in case of other non-binary data ######################
-############# Or remove mutation data as imputing is too hard/dangerous ######################
+
 ```{r}
+source("../scripts/HelperForTheCourse.R")
+
 #To make the comparisons with MOFA, fill in the missing values with feature-wise mean
 #Participants can play around here with various imputation techniques
 CLL_data_imputed <- list("Mutations" = t(apply(CLL_data[["Mutations"]], 1, function(x) {
@@ -78,14 +80,16 @@ CLL_data_imputed <- list("Mutations" = t(apply(CLL_data[["Mutations"]], 1, funct
 CLL_data_imputed[c("Drugs", "mRNA", "Methylation")] <- lapply(CLL_data[c("Drugs", "mRNA", "Methylation")], function(x) t(na.aggregate(t(x))))
 ```
 
-# Note that the following sections are derived from the momix pipeline made available by Laura et al. (2020)
+Note that the following sections are derived from the momix pipeline made available by Laura et al. (2020)
 
-## JIVE
+### JIVE
 
+#### Train the model
 ```{r}
 JIVEfactorization <- jive(CLL_data_imputed, rankJ=numFactors, rankA = rep(numFactors, length(CLL_data_imputed)), method = "given", conv = "default", maxiter = 100, showProgress=TRUE)
 ```
 
+#### Extract weights
 ```{r}
 rankJV <- JIVEfactorization$rankJ;
 rankIV.v <- JIVEfactorization$rankA;
@@ -107,23 +111,21 @@ names(JIVEweights) <- names(CLL_data_imputed)
 
 ```  
 
+#### Extract factors
 ```{r}
 JIVEfactors <- jV[,1:rankJV]
 rownames(JIVEfactors) <- colnames(CLL_data_imputed[[1]])
 colnames(JIVEfactors) <- paste0("LF", 1:numFactors)
 ```
   
-## MCIA
+### MCIA
 
+#### Train the model
 ```{r}
 MCIAfactorization <- mcia(CLL_data_imputed, cia.nf = numFactors)
 ```
 
-```{r}
-MCIAfactors <- as.matrix(MCIAfactorization$mcoa$SynVar)
-colnames(MCIAfactors) <- paste0("LF", 1:numFactors)
-```
-
+#### Extract weights
 ```{r}
 MCIAweights <- list()
 for(j in 1:length(CLL_data_imputed)){
@@ -134,7 +136,13 @@ for(j in 1:length(CLL_data_imputed)){
 names(MCIAweights) <- names(CLL_data_imputed)
 ```
 
-## Compare the results
+#### Extract factors
+```{r}
+MCIAfactors <- as.matrix(MCIAfactorization$mcoa$SynVar)
+colnames(MCIAfactors) <- paste0("LF", 1:numFactors)
+```
+
+### Compare the results
 
 ```{r}
 MOFA::plotVarianceExplained(MOFAobject)
@@ -145,7 +153,7 @@ In case of MOFA => Along with variance explained per view, variance explained pe
 In case of JiVE => Only variance explained per view can be visualized
 In case of MCIA => factors = PCs, sorted by their eigen-values as we have selected the first 10 eigenvectors for this analysis. The variance explained per factor per view is not available but overall the eigen-vectors are sorted by their eigenvalues.
 
-## Save the imputed data and the results
+### Save the imputed data and the results
 
 ```{r}
 save(CLL_data_imputed, file = "../results/CllDataImputed.Rdata")
@@ -161,6 +169,7 @@ factorsList = list("MOFA" = MOFAfactors, "JIVE" = JIVEfactors, "MCIA" = MCIAfact
 save(factorsList, file = "../results/FactorsList.Rdata")
 ```
 
+### Print session info
 ```{r}
 sessionInfo()
 ```
