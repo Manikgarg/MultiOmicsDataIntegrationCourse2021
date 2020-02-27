@@ -10,6 +10,7 @@ The CLL dataset taken from Dietrich *et al* (2018) contains the following inform
 - DNA methylation (4248 x 196)
 - ex vivo drug response (310 x 184)
 
+## Benchmarks
 For benchmarking purposes, different methods will be assessed on their ability to
 - identify IGHV and trisomy of chromosome 12 status
 - selectively identify clinical annotations
