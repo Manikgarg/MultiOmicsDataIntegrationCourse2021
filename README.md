@@ -11,7 +11,7 @@ The CLL dataset taken from Dietrich *et al* (2018) contains the following inform
 - ex vivo drug response (310 x 184)
 
 For benchmarking purposes, different methods will be assessed on their ability to
-- identify IGHV status and trisomy of chromosome 12
+- identify IGHV and trisomy of chromosome 12 status
 - selectively identify clinical annotations
 - identify biologically meaningful pathways
 - selectively identify biological pathways
