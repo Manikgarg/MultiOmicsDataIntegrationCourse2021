@@ -61,7 +61,7 @@ numFactors = 10
 MOFAweights <- getWeights(MOFAobject)
 ```
 
-#### Extract factors
+#### Extract factorsqqqqqq
 ```{r}
 MOFAfactors <- getFactors(MOFAobject)
 ```
