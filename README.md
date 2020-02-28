@@ -19,7 +19,8 @@ For benchmarking purposes, different methods will be assessed on their ability t
 - identify biologically meaningful pathways
 - selectively identify biological pathways
 - predict time to next treatment and overall survival 
-See MOFA<sup>2</sup> paper for more details.
+
+See references 1 and 2 for more details.
 
 ## Take-away
 At the end of the course the participants will:
@@ -29,7 +30,7 @@ At the end of the course the participants will:
 - get hands-on experience with handling missing values
 
 ## Pre-requisites
-Working knowledge of R, basic understanding of maths/statistics and familiarity with gene-set enrichment analysis and survival analysis required. 
+Working knowledge of R, basic understanding of maths/statistics and familiarity with gene-set enrichment analysis and survival analysis required.  
 
 ## References
 1. Cantini, Laura, et al. “Benchmarking joint multi-omics dimensionality reduction approaches for cancer study.” bioRxiv(2020).
