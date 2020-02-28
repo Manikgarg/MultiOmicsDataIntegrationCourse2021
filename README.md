@@ -31,9 +31,6 @@ At the end of the course the participants will:
 ## Pre-requisites
 Working knowledge of R, basic understanding of maths/statistics and familiarity with gene-set enrichment analysis and survival analysis required. 
 
-## Pre-course homework
-Please read reference 1 to better understand the course. Going through references 2, 3 and 4 would be great but not required.
-
 ## References
 1. Cantini, Laura, et al. “Benchmarking joint multi-omics dimensionality reduction approaches for cancer study.” bioRxiv(2020).
 2. Argelaguet, Ricard, et al. "Multi‐Omics Factor Analysis—a framework for unsupervised integration of multi‐omics data sets." Molecular systems biology 14.6 (2018).
