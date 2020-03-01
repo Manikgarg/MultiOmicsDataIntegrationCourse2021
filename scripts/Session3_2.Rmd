@@ -60,7 +60,7 @@ plotEnrichmentBars(gseaResults[[methodName]], methodName, alpha=pval.thr)
 
 
 ```{r}
-interestingFactors <- 4:5
+interestingFactors <- c(5,4)
 
 methodName = "MOFA"
 fseaplots <- lapply(interestingFactors, function(factor) {
@@ -76,7 +76,7 @@ fseaplots <- lapply(interestingFactors, function(factor) {
 cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
                    ncol = 1, labels = paste("Factor", interestingFactors))
 
-interestingFactors <- c(5, 7)
+interestingFactors <- c(10, 8)
 methodName = "JIVE"
 fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
