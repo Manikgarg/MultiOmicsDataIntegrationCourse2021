@@ -34,21 +34,21 @@ Working knowledge of R, basic understanding of maths/statistics and familiarity 
 
 ## Schedule
 
-**Day2**\
-15:45-16:45: [1:00] **Session 2.1** - Introduction to the methods\
-16:45-17:00: [0:15] *Break*\
-17:00-17:45: [1:00] **Session 2.2** - Data exploration and training the models\
+**Day2**
+15:45-16:45: [1:00] **Session 2.1** - Introduction to the methods
+16:45-17:00: [0:15] *Break*
+17:00-17:45: [1:00] **Session 2.2** - Data exploration and training the models
 
-**Day3**\
-14:30-15:30: [1:00] **Session 3.1** - Benchmarking on association with clinical annotations\
-15:30-16:00: [0:30] *Break*\
-16:00-17:30: [1:30] **Session 3.2** - Benchmarking on association with biological annotations\
+**Day3**
+14:30-15:30: [1:00] **Session 3.1** - Benchmarking on association with clinical annotations
+15:30-16:00: [0:30] *Break*
+16:00-17:30: [1:30] **Session 3.2** - Benchmarking on association with biological annotations
 
-**Day4**\
-14:30-15:30: [1:00] **Session 4.1** - Benchmarking on prediction of survival outcomes\
-15:30-16:00: [0:30] *Break*\
-16:00-17:00: [1:00] **Session 4.2** - Understanding advantages and limitations of these tools\
-17:00-17:30: [0:45] *Preparing presentation*\
+**Day4**
+14:30-15:30: [1:00] **Session 4.1** - Benchmarking on prediction of survival outcomes
+15:30-16:00: [0:30] *Break*
+16:00-17:00: [1:00] **Session 4.2** - Understanding advantages and limitations of these tools
+17:00-17:30: [0:45] *Preparing presentation*
 
 ## References
 1. Cantini, Laura, et al. “Benchmarking joint multi-omics dimensionality reduction approaches for cancer study.” bioRxiv(2020).
