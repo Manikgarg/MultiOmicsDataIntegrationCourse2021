@@ -14,7 +14,7 @@ The CLL dataset taken from Dietrich *et al* (2018) contains the following inform
 
 ## Benchmarks
 For benchmarking purposes, different methods will be assessed on their ability to
-- identify IGHV and trisomy of chromosome 12 status
+- identify IGHV status and trisomy of chromosome 12
 - selectively identify clinical annotations
 - identify biologically meaningful pathways
 - selectively identify biological pathways
