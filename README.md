@@ -26,7 +26,7 @@ See references 1 and 2 for more details.
 At the end of the course the participants will:
 - get hands-on experience in using three different data-integration methods
 - learn advantages and limitations of different methods
-- get an intuition of which method to apply for which kind of dataset.
+- get an intuition of which method to apply for which kind of dataset
 - get hands-on experience with handling missing values
 
 ## Pre-requisites
