@@ -14,7 +14,7 @@ output:
 
 Overview
 
-![Cantini et al. (2020)](./image/Screenshot 2020-03-01 at 22.54.16.png)
+![Cantini *et al* (2020)](./image/Screenshot 2020-03-01 at 22.54.16.png)
 
 ---
 
@@ -52,7 +52,7 @@ Selected Dataset: Chronic lymphocytic leukaemia (CLL)
 Available CLL multi-omics data
 
 ![Multi-omics CLL data](./image/Screenshot 2020-03-01 at 22.37.27.png)
-<small>[Data: Dietrich et al. (2018)](https://www.zora.uzh.ch/id/eprint/143400/); [Picture: Argelaguet et al. (2018)](https://bioconductor.org/packages/devel/bioc/vignettes/MOFA/inst/doc/MOFA_example_CLL.html)</small>
+<small>[Data: Dietrich *et al* (2018)](https://www.zora.uzh.ch/id/eprint/143400/); [Picture: Argelaguet *et al* (2018)](https://bioconductor.org/packages/devel/bioc/vignettes/MOFA/inst/doc/MOFA_example_CLL.html)</small>
 
 ---
 
