@@ -39,6 +39,19 @@ MOFAobject
 plotDataOverview(MOFAobject)
 ```
 
+First of all we see that this dataset has both discrete (such as Mutations data) and continuous data (such as mRNA data). 
+Next we see that only Mutations data has information for all the 200 patients. Therefore, this dataset does not have equal number of features for all the samples. 
+
+Now, let us check for missing values within each data modality.
+
+```{r}
+lapply(CLL_data, function(g) table(is.na(g)))
+```
+
+We see that all of them have >= 2% of missing values. Hence, this dataset provides an opportunity to benchamrk the methods on all these real-world scenarios.
+
+Let us start with training the MOFA model which doesn't require an explicit imputation of the missing data.
+
 ### MOFA
 
 #### Load pre-trained MOFA model 
@@ -86,6 +99,8 @@ Note that the following sections on JIVE and MCIA model training are derived fro
 
 #### Train the model
 ```{r}
+#maxiter is taken to be 100 in the interest of time.
+#Feel free to explore various parameter options from the r.jive manual
 JIVEfactorization <- jive(CLL_data_imputed, rankJ=numFactors, rankA = rep(numFactors, length(CLL_data_imputed)), method = "given", conv = "default", maxiter = 100, showProgress=TRUE)
 ```
 
@@ -122,6 +137,7 @@ colnames(JIVEfactors) <- paste0("LF", 1:numFactors)
 
 #### Train the model
 ```{r}
+#Again feel free to explore more parameter options from the omicade4 reference manual
 MCIAfactorization <- mcia(CLL_data_imputed, cia.nf = numFactors)
 ```
 
