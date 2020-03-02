@@ -118,6 +118,8 @@ for(j in 1:length(CLL_data_imputed)){
   J <- rbind(J,JIVEfactorization$joint[[j]])
   ng <- c(ng,dim(JIVEfactorization$joint[[j]])[1])
 }
+
+#Extract weights and factors from the singlular value decomposition (svd) of joint matrix J.
 svd.o <- svd(J)
 jV <- svd.o$v %*% diag(svd.o$d)
 for(j in 1:length(CLL_data_imputed)){
@@ -141,6 +143,7 @@ colnames(JIVEfactors) <- paste0("LF", 1:numFactors)
 #### Train the model
 ```{r}
 #Again feel free to explore more parameter options from the omicade4 reference manual
+#More description in the list of outputs can be found here: https://rdrr.io/cran/ade4/man/mcoa.html
 MCIAfactorization <- mcia(CLL_data_imputed, cia.nf = numFactors)
 ```
 
