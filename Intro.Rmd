@@ -16,7 +16,7 @@ output:
 Overview
 
 ![Argelaguet *et al* (2018)](./image/Screenshot 2020-03-02 at 11.25.44.png)
-<small>[Picture: Argelaguet *et al* (2018)](https://bioconductor.org/packages/devel/bioc/vignettes/MOFA/inst/doc/MOFA_example_CLL.html)</small>
+<small>[Picture: Argelaguet *et al* (2018)](https://www.embopress.org/doi/pdf/10.15252/msb.20178124)</small>
 ---
 
 Overview
