@@ -36,11 +36,17 @@ Results for TCGA cancer data
 
 ---
 
-However for bechmarking
+Overview
 
-- Only continuous data was considered
-- Same number of features were considered across all omics datasets
-- Patients containing missing data were excluded
+![Cantini *et al* (2020)](./image/Screenshot 2020-03-02 at 15.15.07.png)
+<small>[Picture: Cantini *et al* (2020)](https://github.com/ComputationalSystemsBiology/momix-notebook)</small>
+
+---
+
+Overview
+
+![Argelaguet *et al* (2018)](./image/Screenshot 2020-03-02 at 11.25.44.png)
+<small>[Picture: Argelaguet *et al* (2020)](https://www.embopress.org/doi/10.15252/msb.20178124)</small>
 
 ---
 
