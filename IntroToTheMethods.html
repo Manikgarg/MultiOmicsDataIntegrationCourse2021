@@ -1775,11 +1775,23 @@ document.getElementsByTagName('head')[0].appendChild(style);
 
 <section class="slide level2">
 
+<p>Multi-omics factor analysis (MOFA)</p>
+<ul>
+<li>Extension of Factor Analysis</li>
+<li>Doesn’t require data imputation</li>
+<li>Finds a shared factor matrix</li>
+<li>Number of factors can be estimated</li>
+<li>Implemented as Bioconductor package <code>mofa</code>: <small><a href="https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf">https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf</a></small></li>
+</ul>
+</section>
+<section class="slide level2">
+
 <p>Joint and Individual Variation Explained (JIVE)</p>
 <ul>
 <li>Extension of Principal Component Analysis</li>
 <li>Requires data imputation</li>
-<li>Finds omics-specific and joint factors</li>
+<li>Finds both joint factor matrix and omics-specific factor matrices</li>
+<li>Number of factors can be estimated</li>
 <li>Implemented as R package <code>r.jive</code>: <small><a href="https://cran.r-project.org/web/packages/r.jive/r.jive.pdf">https://cran.r-project.org/web/packages/r.jive/r.jive.pdf</a></small></li>
 </ul>
 </section>
@@ -1789,18 +1801,9 @@ document.getElementsByTagName('head')[0].appendChild(style);
 <ul>
 <li>Extension of Co-intertia Analysis</li>
 <li>Requires data imputation</li>
-<li>Finds omics-specific factors</li>
+<li>Finds omics-specific factor matrices but tries to maximize co-intertia between them</li>
+<li>Number of factors (axes) can be selected interactively from the scree-plot</li>
 <li>Implemented as Bioconductor package <code>omicade4</code>: <small><a href="https://www.bioconductor.org/packages/release/bioc/manuals/omicade4/man/omicade4.pdf">https://www.bioconductor.org/packages/release/bioc/manuals/omicade4/man/omicade4.pdf</a></small></li>
-</ul>
-</section>
-<section class="slide level2">
-
-<p>Multi-omics factor analysis (MOFA)</p>
-<ul>
-<li>Extension of Factor Analysis</li>
-<li>Doesn’t require data imputation</li>
-<li>Finds omics-specific and joint factors</li>
-<li>Implemented as Bioconductor package <code>mofa</code>: <small><a href="https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf">https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf</a></small></li>
 </ul>
 </section>
     </div>

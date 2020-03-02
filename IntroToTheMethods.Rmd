@@ -12,11 +12,22 @@ output:
     #background-transition: slide
 ---
 
+Multi-omics factor analysis (MOFA)
+
+- Extension of Factor Analysis
+- Doesn't require data imputation
+- Finds a shared factor matrix
+- Number of factors can be estimated
+- Implemented as Bioconductor package `mofa`: <small>[https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf](https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf)</small>
+
+---
+
 Joint and Individual Variation Explained (JIVE) 
 
 - Extension of Principal Component Analysis
 - Requires data imputation
-- Finds omics-specific and joint factors
+- Finds both joint factor matrix and omics-specific factor matrices 
+- Number of factors can be estimated
 - Implemented as R package `r.jive`: <small>[https://cran.r-project.org/web/packages/r.jive/r.jive.pdf](https://cran.r-project.org/web/packages/r.jive/r.jive.pdf)</small>
 
 ---
@@ -25,14 +36,6 @@ Multiple co-inertia analysis (MCIA)
 
 - Extension of Co-intertia Analysis
 - Requires data imputation
-- Finds omics-specific factors
+- Finds omics-specific factor matrices but tries to maximize co-intertia between them
+- Number of factors (axes) can be selected interactively from the scree-plot
 - Implemented as Bioconductor package `omicade4`: <small>[https://www.bioconductor.org/packages/release/bioc/manuals/omicade4/man/omicade4.pdf](https://www.bioconductor.org/packages/release/bioc/manuals/omicade4/man/omicade4.pdf)</small>
-
----
-
-Multi-omics factor analysis (MOFA)
-
-- Extension of Factor Analysis
-- Doesn't require data imputation
-- Finds omics-specific and joint factors
-- Implemented as Bioconductor package `mofa`: <small>[https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf](https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf)</small>
