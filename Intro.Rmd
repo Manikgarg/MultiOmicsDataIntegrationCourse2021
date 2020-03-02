@@ -15,8 +15,9 @@ output:
 
 Overview
 
-![Argelaguet *et al* (2018)](./image/Screenshot 2020-03-02 at 11.25.44.png)
-<small>[Picture: Argelaguet *et al* (2018)](https://www.embopress.org/doi/pdf/10.15252/msb.20178124)</small>
+![Cantini *et al* (2020)](./image/Screenshot 2020-03-02 at 15.15.07.png)
+<small>[Picture: Cantini *et al* (2020)](https://github.com/ComputationalSystemsBiology/momix-notebook)</small>
+
 ---
 
 Overview
