@@ -99,26 +99,29 @@ Note that the following sections on JIVE and MCIA model training are derived fro
 
 #### Train the model
 ```{r}
-#maxiter is taken to be 100 in the interest of time.
+#Same ranks are used for the joint matrix and the individual matrices as the number of factors
+#As the ranks are already specified, method="given" is used.
+#conv="default" is used
+#maxiter=100 is used in the interest of time.
 #Feel free to explore various parameter options from the r.jive manual
 JIVEfactorization <- jive(CLL_data_imputed, rankJ=numFactors, rankA = rep(numFactors, length(CLL_data_imputed)), method = "given", conv = "default", maxiter = 100, showProgress=TRUE)
 ```
 
 #### Extract weights
 ```{r}
-rankJV <- JIVEfactorization$rankJ;
-rankIV.v <- JIVEfactorization$rankA;
+rankJV <- JIVEfactorization$rankJ
+rankIV.v <- JIVEfactorization$rankA
 J <- numeric(0)
 ng <- 0
-JIVEweights <- list();
+JIVEweights <- list()
 for(j in 1:length(CLL_data_imputed)){
-  J <- rbind(J,JIVEfactorization$joint[[j]]);
+  J <- rbind(J,JIVEfactorization$joint[[j]])
   ng <- c(ng,dim(JIVEfactorization$joint[[j]])[1])
 }
-svd.o <- svd(J);
-jV <- svd.o$v %*% diag(svd.o$d);
+svd.o <- svd(J)
+jV <- svd.o$v %*% diag(svd.o$d)
 for(j in 1:length(CLL_data_imputed)){
-  JIVEweights[[j]] <- svd.o$u[(1+sum(ng[1:j])):sum(ng[1:j+1]),1:rankJV]; ###error in dimension
+  JIVEweights[[j]] <- svd.o$u[(1+sum(ng[1:j])):sum(ng[1:j+1]),1:rankJV]
   rownames(JIVEweights[[j]]) <- rownames(CLL_data_imputed[[j]])
   colnames(JIVEweights[[j]]) <- paste0("LF", 1:numFactors)
 }
