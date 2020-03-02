@@ -68,6 +68,18 @@ Available CLL multi-omics data
 ![Multi-omics CLL data](./image/Screenshot 2020-03-01 at 22.37.27.png)
 <small>[Data: Dietrich *et al* (2018)](https://www.zora.uzh.ch/id/eprint/143400/); [Picture: Argelaguet *et al* (2018)](https://bioconductor.org/packages/devel/bioc/vignettes/MOFA/inst/doc/MOFA_example_CLL.html)</small>
 
+
+---
+
+Take-away
+
+At the end of the course the participants will:
+
+- get hands-on experience in using three different data-integration methods
+- learn advantages and limitations of different methods
+- get an intuition of which method to apply for which kind of dataset
+- get hands-on experience with handling missing values
+
 ---
 
 Schedule
