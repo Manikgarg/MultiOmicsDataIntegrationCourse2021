@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Benchmark 1: Clinical association with IGHV and trisomy 12
+## Benchmark 1: Clinical association with IGHV status and trisomy 12
 
 ### Load required packages
 ```{r}
@@ -65,7 +65,7 @@ visualizeWeightsHeatmap(weightsList[["MCIA"]], 'Mutations')
 
 For each factor of the specified method, the top weighted mutations can be viewed, thus providing a better way to identify factors associated with mutations of interest, especially when heatmaps become complex to interpret like in the case of MCIA and JIVE. 
 
-For starters, lets look at MOFA factor 1 which seems to have the highest (-)ve weight for IGHV.
+For starters, lets look at MOFA factor 1 which seems to have the highest (-)ve weight for IGHV status.
 
 ```{r}
 methodName = "MOFA"
@@ -73,46 +73,31 @@ factorNumber = 1
 nMutationsToDisplay = 10
 plotTopWeightsUsingSeparateWeightsAndFactors(weightsList[[methodName]], "Mutations", factor = factorNumber, nfeatures = nMutationsToDisplay)
 ```
-IGHV shows up at the top. 
+IGHV status shows up at the top. 
 
-#### Similarly explore different factors for different methods and see which factors better associate with IGHV and trisomy12 status
+#### Similarly explore different factors for different methods and see which factors better associate with IGHV status and trisomy12.
 
 #### Plot sample scatter-plot
 
-To confirm whether your identified factors can successfully divide patients into two separate groups based on their IGHV and trisomy12 status, we will plot the sample scatter. 
+To confirm whether your identified factors can successfully divide patients into two separate groups based on their IGHV status and presence or absence of trisomy12, we will plot the sample scatter. 
 
 ```{r}
 IGHV <- factor(clinicalData$IGHV)
 trisomy12 <- factor(clinicalData$trisomy12)
 methodName <- "MOFA"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = #Your chosen factor related to IGHV
-                                                    , y = #Your chosen factor related to trisomy12
-                                                    , colour = IGHV, shape = trisomy12)) +
-  geom_point()+ 
-  ggtitle(methodName)
-```
-```{r}
-methodName <- "JIVE"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = #Your chosen factor related to IGHV
-                                                    , y = #Your chosen factor related to trisomy12
-                                                    , colour = IGHV, shape = trisomy12)) +
+ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF2, 
+                                                  colour = IGHV, shape = trisomy12)) +
   geom_point()+ 
   ggtitle(methodName)
 ```
 
-```{r}
-methodName <- "MCIA"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = #Your chosen factor related to IGHV
-                                                    , y = #Your chosen factor related to trisomy12
-                                                    , colour = IGHV, shape = trisomy12)) +
-  geom_point()+ 
-  ggtitle(methodName)
-```
-#### Question: Which method gives the best seperation between the patients having IGHV and trisomy12 mutations?
+As described in the [MOFA vignette](https://bioconductor.org/packages/devel/bioc/vignettes/MOFA/inst/doc/MOFA_example_CLL.html), we can see a clear separation between the samples based on their IGHV status (color) and presence or absence of trisomy12 status (shape). Repeat the same process of JIVE and MCIA with the factors noticed above and compare their performance.
+
+#### Question: Which method gives the best seperation between the patients having IGHV status and trisomy12 mutations?
 
 ### Perform selectivity analysis
 
-We also noticed that in JIVE, multiple factors have given highest weights to IGHV and trisomy12 status, thereby implying that the factors are capturing similar clinical information and are not exclusive to each other. To quantify the independence of each factor in representing biological information, a selectivity score was devised by Laura et al. (2020) given by:
+We also noticed that in JIVE, multiple factors have given highest weights to IGHV status and trisomy12, thereby implying that the factors are capturing similar clinical information and are not exclusive to each other. To quantify the independence of each factor in representing biological information, a selectivity score was devised by Laura et al. (2020) given by:
 
 $$Selectivity\;Score = 2 (\frac{N_c+N_f}{L})$$
 
