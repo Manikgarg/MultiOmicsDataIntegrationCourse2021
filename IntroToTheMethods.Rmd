@@ -14,15 +14,29 @@ output:
 
 Multi-omics factor analysis (MOFA)
 
+![Argelaguet *et al* (2018)](./image/Screenshot 2020-03-02 at 11.25.44.png)
+<small>[Picture: Argelaguet *et al* (2020)](https://www.embopress.org/doi/10.15252/msb.20178124)</small>
+
+---
+
+MOFA
+
 - Extension of Factor Analysis
 - Doesn't require data imputation
 - Finds a shared factor matrix
-- Number of factors can be estimated
+- Number of factors can be estimated by providing variance threshold
 - Implemented as Bioconductor package `mofa`: <small>[https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf](https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf)</small>
 
 ---
 
-Joint and Individual Variation Explained (JIVE) 
+Joint and Individual Variation Explained (JIVE)
+
+![Lock *et al* (2013)](./image/Screenshot 2020-03-03 at 14.01.10.png)
+<small>[Picture: Lock *et al* (2013)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3671601/)</small>
+
+---
+
+JIVE
 
 - Extension of Principal Component Analysis
 - Requires data imputation
