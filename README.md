@@ -20,7 +20,7 @@ For benchmarking purposes, different methods will be assessed on their ability t
 - selectively identify biological pathways
 - predict time to next treatment and overall survival 
 
-See references 1 and 2 for more details. The corresponding code could be found at [momix-notebook](https://github.com/ComputationalSystemsBiology/momix-notebook) and [MOFA](https://github.com/bioFAM/MOFA).
+See references 1 and 2 for more details. The corresponding code could be found at [momix-notebook](https://github.com/ComputationalSystemsBiology/momix-notebook) and [MOFA v2](https://biofam.github.io/MOFA2/).
 
 ## Take-away
 At the end of the course the participants will:
