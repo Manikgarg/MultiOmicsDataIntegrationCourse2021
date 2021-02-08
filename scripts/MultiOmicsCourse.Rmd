@@ -5,22 +5,22 @@ output: html_notebook
 
 Load the required packages
 ```{r}
-suppressMessages(library("MultiAssayExperiment"))
-suppressMessages(library("MOFA"))
+suppressMessages(library("knitr"))
+suppressMessages(library("MOFA2"))
 suppressMessages(library("MOFAdata"))
-#install.packages("r.jive")
+suppressMessages(library("data.table"))
+suppressMessages(library("ggplot2"))
+suppressMessages(library("tidyverse"))
+suppressMessages(library("MultiAssayExperiment"))
+
 suppressMessages(library("r.jive"))
-#BiocManager::install("omicade4")
 suppressMessages(library("omicade4"))
-#BiocManager::install("BloodCancerMultiOmics2017")
 suppressMessages(library("BloodCancerMultiOmics2017"))
 suppressMessages(library("survival"))
 suppressMessages(library("survminer"))
 suppressMessages(library("zoo"))
 suppressMessages(library("pheatmap"))
 suppressMessages(library("fgsea", quietly = TRUE))
-#BiocManager::install("biomaRt")
-#suppressMessages(library("biomaRt"))
 ```
 
 ```{r}
@@ -29,16 +29,24 @@ source("../scripts/HelperForTheCourse.R")
 
 Load the data
 ```{r}
-data("CLL_data", package = "MOFAdata")
-data("CLL_covariates", package = "MOFAdata")
+#data("CLL_data", package = "MOFAdata")
+#data("CLL_covariates", package = "MOFAdata")
+utils::data("CLL_data")       
+lapply(CLL_data,dim)
 ```
-CLL_covariates only has gender and disgnosis information
+Load the metadata
+```{r}
+CLL_covariates <- fread("http://ftp.ebi.ac.uk/pub/databases/mofa/cll_vignette/sample_metadata.txt")
+
+head(CLL_covariates) %>% kable
+```
+CLL_covariates has information about relevant patient meta-data such as IGHV status and trisomy-12 status.
 
 ## MOFA
 
 Create MOFA object
 ```{r}
-MOFAobject <- createMOFAobject(CLL_data)
+MOFAobject <- create_mofa(CLL_data)
 ```
 
 ```{r}
@@ -46,13 +54,13 @@ MOFAobject
 ```
 
 ```{r}
-plotDataOverview(MOFAobject)
+plot_data_overview(MOFAobject)
 ```
 
-Load pre-trained MOFA model (assuming that training has already been covered in the talk)
+Load pre-trained MOFA model
 ```{r}
-filepath <- system.file("extdata", "CLL_model.hdf5", package = "MOFAdata")
-MOFAobject <- loadModel(filepath, MOFAobject)
+#filepath <- system.file("extdata", "CLL_model.hdf5", package = "MOFAdata")
+MOFAobject <- readRDS(url("http://ftp.ebi.ac.uk/pub/databases/mofa/cll_vignette/MOFA2_CLL.rds"))
 ```
 
 ```{r}
@@ -65,11 +73,13 @@ numFactors = 10
 
 Extract weights and factors matrix
 ```{r}
-MOFAweights <- getWeights(MOFAobject)
+MOFAweights <- get_weights(MOFAobject)
 ```
 
 ```{r}
-MOFAfactors <- getFactors(MOFAobject)
+MOFAfactorsList <- get_factors(MOFAobject)
+MOFAfactors <- MOFAfactorsList[["group1"]][, 1:numFactors]
+colnames(MOFAfactors) <- paste0("LF", 1:numFactors)
 ```
 
 ## Impute the data
@@ -84,7 +94,7 @@ CLL_data_imputed <- list("Mutations" = t(apply(CLL_data[["Mutations"]], 1, funct
 CLL_data_imputed[c("Drugs", "mRNA", "Methylation")] <- lapply(CLL_data[c("Drugs", "mRNA", "Methylation")], function(x) t(na.aggregate(t(x))))
 ```
 
-# Note that the following sections are derived from the momix pipeline made available by Laura et al. (2020)
+# Note that the following sections are derived from the momix pipeline[https://github.com/ComputationalSystemsBiology/momix-notebook] made available by Laura et al. (2021)[https://doi.org/10.1038/s41467-020-20430-7]
 
 ## JIVE
 
@@ -143,7 +153,7 @@ names(MCIAweights) <- names(CLL_data_imputed)
 ## Compare the results
 
 ```{r}
-MOFA::plotVarianceExplained(MOFAobject)
+plot_variance_explained(MOFAobject, factors = paste("Factor",1:numFactors, sep=""))
 plot(JIVEfactorization)
 plot(MCIAfactorization, axes = c(1,2), sample.lab = FALSE, df.color = 1:4)
 plot(MCIAfactorization, axes = c(1,3), sample.lab = FALSE, df.color = 1:4)
@@ -279,9 +289,9 @@ for (methodName in names(metagenesList)){
 # heatmap of enriched pathways per factor at 1% FDR
 # plotEnrichmentHeatmap(gsea, alpha=pval.thr)
 # plot number of enriched pathways per factor at 1% FDR
-plotEnrichmentBars(gseaResults[["MOFA"]], alpha=pval.thr)
-plotEnrichmentBars(gseaResults[["MCIA"]], alpha=pval.thr)
-plotEnrichmentBars(gseaResults[["JIVE"]], alpha=pval.thr)
+plotEnrichmentBars(gseaResults[["MOFA"]], alpha=pval.thr, methodName = "MOFA")
+plotEnrichmentBars(gseaResults[["MCIA"]], alpha=pval.thr, methodName = "MCIA")
+plotEnrichmentBars(gseaResults[["JIVE"]], alpha=pval.thr, methodName = "JIVE")
 ```
 
 
@@ -293,7 +303,7 @@ fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
     gseaResults[["MOFA"]],
     factor = factor,
-    alpha = pval.thr,
+    alpha = pval.thr, methodName = "MOFA",
     max.pathways = 10 # The top number of pathways to display
   )
 })
@@ -305,7 +315,7 @@ fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
     gseaResults[["MCIA"]],
     factor = factor,
-    alpha = pval.thr,
+    alpha = pval.thr, methodName = "MCIA",
     max.pathways = 10 # The top number of pathways to display
   )
 })
@@ -318,18 +328,11 @@ fseaplots <- lapply(interestingFactors, function(factor) {
   plotEnrichmentUsingSeparateWeightsAndFactors(
     gseaResults[["JIVE"]],
     factor = factor,
-    alpha = pval.thr,
+    alpha = pval.thr, methodName = "JIVE",
     max.pathways = 10 # The top number of pathways to display
   )
 })
 
 cowplot::plot_grid(fseaplots[[1]], fseaplots[[2]],
                    ncol = 1, labels = paste("Factor", interestingFactors))
-```
-
-## Benchmark 3: Prediction of survival outcomes
-
-```{r}
-source("../scripts/HelperForTheCourse.R")
-fp(factorsList, survT, "myPlot")
 ```

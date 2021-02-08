@@ -11,9 +11,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Train different methods and save results
 
+### Make sure to point towards correct python binary
+```{r}
+reticulate::use_python("/usr/bin/python3", required = TRUE)
+```
+
 ### Load required packages
 ```{r}
-suppressMessages(library("MOFA"))
+suppressMessages(library("MOFA2"))
 suppressMessages(library("MOFAdata"))
 suppressMessages(library("r.jive"))
 suppressMessages(library("omicade4"))
@@ -22,13 +27,14 @@ suppressMessages(library("zoo"))
 
 ### Load the required data
 ```{r}
-data("CLL_data", package = "MOFAdata")
+utils::data("CLL_data")       
+lapply(CLL_data,dim)
 ```
 
 ### Visualize the data
 ```{r}
 #Create MOFA object
-MOFAobject <- createMOFAobject(CLL_data)
+MOFAobject <- create_mofa(CLL_data)
 ```
 
 ```{r}
@@ -36,7 +42,7 @@ MOFAobject
 ```
 
 ```{r}
-plotDataOverview(MOFAobject)
+plot_data_overview(MOFAobject)
 ```
 
 First of all we see that this dataset has both discrete (such as Mutations data) and continuous data (such as mRNA data). 
@@ -56,8 +62,7 @@ Let us start with training the MOFA model which doesn't require an explicit impu
 
 #### Load pre-trained MOFA model 
 ```{r}
-filepath <- system.file("extdata", "CLL_model.hdf5", package = "MOFAdata")
-MOFAobject <- loadModel(filepath, MOFAobject)
+MOFAobject <- readRDS(url("http://ftp.ebi.ac.uk/pub/databases/mofa/cll_vignette/MOFA2_CLL.rds"))
 ```
 
 ```{r}
@@ -71,12 +76,13 @@ numFactors = 10
 
 #### Extract weights
 ```{r}
-MOFAweights <- getWeights(MOFAobject)
+MOFAweights <- get_weights(MOFAobject)
 ```
 
 #### Extract factors
 ```{r}
-MOFAfactors <- getFactors(MOFAobject)
+MOFAfactors <- get_factors(MOFAobject)
+MOFAfactors <- MOFAfactorsList[["group1"]][, 1:numFactors]
 ```
 
 ### Impute the data for rest of the analysis
@@ -93,7 +99,7 @@ CLL_data_imputed <- list("Mutations" = t(apply(CLL_data[["Mutations"]], 1, funct
 CLL_data_imputed[c("Drugs", "mRNA", "Methylation")] <- lapply(CLL_data[c("Drugs", "mRNA", "Methylation")], function(x) t(na.aggregate(t(x))))
 ```
 
-Note that the following sections on JIVE and MCIA model training are derived from the [momix-notebook](https://github.com/ComputationalSystemsBiology/momix-notebook) made available by Cantini *et al.* (2020)
+Note that the following sections are derived from the momix pipeline[https://github.com/ComputationalSystemsBiology/momix-notebook] made available by Cantini *et al.* (2021)[https://doi.org/10.1038/s41467-020-20430-7]
 
 ### JIVE
 
@@ -125,7 +131,7 @@ jV <- svd.o$v %*% diag(svd.o$d)
 for(j in 1:length(CLL_data_imputed)){
   JIVEweights[[j]] <- svd.o$u[(1+sum(ng[1:j])):sum(ng[1:j+1]),1:rankJV]
   rownames(JIVEweights[[j]]) <- rownames(CLL_data_imputed[[j]])
-  colnames(JIVEweights[[j]]) <- paste0("LF", 1:numFactors)
+  colnames(JIVEweights[[j]]) <- paste0("Factor", 1:numFactors)
 }
 names(JIVEweights) <- names(CLL_data_imputed)
 
@@ -135,7 +141,7 @@ names(JIVEweights) <- names(CLL_data_imputed)
 ```{r}
 JIVEfactors <- jV[,1:rankJV]
 rownames(JIVEfactors) <- colnames(CLL_data_imputed[[1]])
-colnames(JIVEfactors) <- paste0("LF", 1:numFactors)
+colnames(JIVEfactors) <- paste0("Factor", 1:numFactors)
 ```
   
 ### MCIA
@@ -153,7 +159,7 @@ MCIAweights <- list()
 for(j in 1:length(CLL_data_imputed)){
     MCIAweights[[j]]<-as.matrix(MCIAfactorization$mcoa$axis[1:dim(CLL_data_imputed[[j]])[1],])
     rownames(MCIAweights[[j]])<-rownames(CLL_data_imputed[[j]])
-    colnames(MCIAweights[[j]])<-paste0("LF", 1:numFactors)
+    colnames(MCIAweights[[j]])<-paste0("Factor", 1:numFactors)
 }
 names(MCIAweights) <- names(CLL_data_imputed)
 ```
@@ -161,13 +167,13 @@ names(MCIAweights) <- names(CLL_data_imputed)
 #### Extract factors
 ```{r}
 MCIAfactors <- as.matrix(MCIAfactorization$mcoa$SynVar)
-colnames(MCIAfactors) <- paste0("LF", 1:numFactors)
+colnames(MCIAfactors) <- paste0("Factor", 1:numFactors)
 ```
 
 ### Compare the results
 
 ```{r}
-MOFA::plotVarianceExplained(MOFAobject)
+plot_variance_explained(MOFAobject, factors = paste("Factor",1:numFactors, sep=""))
 plot(JIVEfactorization)
 plot(MCIAfactorization, axes = c(1,2), sample.lab = FALSE, df.color = 1:4)
 ```

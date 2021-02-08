@@ -85,7 +85,7 @@ To confirm whether your identified factors can successfully divide patients into
 IGHV <- factor(clinicalData$IGHV)
 trisomy12 <- factor(clinicalData$trisomy12)
 methodName <- "MOFA"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = LF1, y = LF2, 
+ggplot(data.frame(factorsList[[methodName]]), aes(x = Factor1, y = Factor2, 
                                                   colour = IGHV, shape = trisomy12)) +
   geom_point()+ 
   ggtitle(methodName)
@@ -106,9 +106,9 @@ Where N<sub>c</sub> is the total number of clinical annotations associated with 
 #### Extract the selectivity results for each method
 
 ```{r}
-clinicalFeaturesOfInterest <- c("IGHV", "SF3B1", "NOTCH1", "BRAF", "TP53", "del17p13", "del11q22.3", "trisomy12")
+clinicaFactoreaturesOfInterest <- c("IGHV", "SF3B1", "NOTCH1", "BRAF", "TP53", "del17p13", "del11q22.3", "trisomy12")
 pval.thr <- 0.05
-out_clinical <- calculateSelectivityScoreForClinicalAnnotations(factorsList, clinicalData, clinicalFeaturesOfInterest, pval.thr)
+out_clinical <- calculateSelectivityScoreForClinicalAnnotations(factorsList, clinicalData, clinicaFactoreaturesOfInterest, pval.thr)
 ```
 
 ```{r}
