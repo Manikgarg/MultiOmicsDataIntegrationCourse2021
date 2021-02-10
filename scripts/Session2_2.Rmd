@@ -81,7 +81,7 @@ MOFAweights <- get_weights(MOFAobject)
 
 #### Extract factors
 ```{r}
-MOFAfactors <- get_factors(MOFAobject)
+MOFAfactorsList <- get_factors(MOFAobject)
 MOFAfactors <- MOFAfactorsList[["group1"]][, 1:numFactors]
 ```
 
