@@ -35,20 +35,19 @@ Working knowledge of R, basic understanding of maths/statistics and familiarity 
 ## Schedule
 
 **Day2**\
-15:45-16:45: [1:00] **Session 2.1** - Introduction to the methods\
-16:45-17:00: [0:15] *Break*\
-17:00-17:45: [1:00] **Session 2.2** - Data exploration and training the models
+15:00-16:00: [1:00] **Session 2.1** - Introduction to the methods\
+16:00-16:15: [0:15] *Break*\
+16:15-18:00: [1:45] **Session 2.2** - Data exploration and training the models
 
 **Day3**\
-14:30-15:30: [1:00] **Session 3.1** - Benchmarking on association with clinical annotations\
-15:30-16:00: [0:30] *Break*\
-16:00-17:30: [1:30] **Session 3.2** - Benchmarking on association with biological annotations
+15:30-16:15: [0:45] **Session 3.1** - Benchmarking on association with clinical annotations\
+16:15-16:30: [0:15] *Break*\
+16:30-17:30: [1:00] **Session 3.2** - Benchmarking on association with biological annotations
 
 **Day4**\
-14:30-15:30: [1:00] **Session 4.1** - Benchmarking on prediction of survival outcomes\
-15:30-16:00: [0:30] *Break*\
-16:00-17:00: [1:00] **Session 4.2** - Understanding advantages and limitations of these tools\
-17:00-17:30: [0:45] *Preparing presentation*
+16:15-17:00: [0:45] **Session 4.1** - Benchmarking on prediction of survival outcomes\
+17:00-17:15: [0:15] *Break*\
+17:15-18:00: [1:00] **Session 4.2** - Preparing presentation (advantages and limitations of these tools)\
 
 ## References
 1. Cantini, L., Zakeri, P., Hernandez, C. et al. Benchmarking joint multi-omics dimensionality reduction approaches for the study of cancer. Nat Commun 12, 124 (2021). https://doi.org/10.1038/s41467-020-20430-7
