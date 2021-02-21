@@ -47,7 +47,7 @@ Working knowledge of R, basic understanding of maths/statistics and familiarity 
 **Day4**\
 16:15-17:00: [0:45] **Session 4.1** - Benchmarking on prediction of survival outcomes\
 17:00-17:15: [0:15] *Break*\
-17:15-18:00: [1:00] **Session 4.2** - Preparing presentation (advantages and limitations of these tools)\
+17:15-18:00: [0:45] **Session 4.2** - Preparing presentation (advantages and limitations of these tools)\
 
 ## References
 1. Cantini, L., Zakeri, P., Hernandez, C. et al. Benchmarking joint multi-omics dimensionality reduction approaches for the study of cancer. Nat Commun 12, 124 (2021). https://doi.org/10.1038/s41467-020-20430-7
