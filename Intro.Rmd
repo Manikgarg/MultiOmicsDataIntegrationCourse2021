@@ -1,7 +1,7 @@
 ---
 title: "Comparing different multi-omics data integration tools"
 author: "Manik Garg (manikg@ebi.ac.uk)"
-date: "02/03/2020"
+date: "22/02/2021"
 output: 
   revealjs::revealjs_presentation:
     #theme: simple
@@ -15,14 +15,19 @@ output:
 
 Overview
 
-![Cantini *et al* (2020)](./image/Screenshot 2020-03-02 at 15.15.07.png)
-<small>[Picture: Cantini *et al* (2020)](https://github.com/ComputationalSystemsBiology/momix-notebook)</small>
+![Cantini *et al* (2021)](./image/Screenshot 2020-03-02 at 15.15.07.png)
+<small>[Picture: Cantini *et al* (2021)](https://github.com/ComputationalSystemsBiology/momix-notebook)</small>
+
+---
+
+![Cantini *et al* (2021)](./image/Screenshot 2021-02-21 at 17.56.55.png)
 
 ---
 
 Overview
 
-![Cantini *et al* (2020)](./image/Screenshot 2020-03-01 at 22.54.16.png)
+![Cantini *et al* (2021)](./image/41467_2020_20430_Fig2.png)
+<small>[Picture: Cantini *et al* (2021)](https://www.nature.com/articles/s41467-020-20430-7)</small>
 
 ---
 
@@ -38,15 +43,13 @@ Results for TCGA cancer data
 
 Overview
 
-![Cantini *et al* (2020)](./image/Screenshot 2020-03-02 at 15.15.07.png)
-<small>[Picture: Cantini *et al* (2020)](https://github.com/ComputationalSystemsBiology/momix-notebook)</small>
+![Cantini *et al* (2021)](./image/Screenshot 2020-03-02 at 15.15.07.png)
+<small>[Picture: Cantini *et al* (2021)](https://github.com/ComputationalSystemsBiology/momix-notebook)</small>
 
 ---
 
-Overview
-
 ![Argelaguet *et al* (2018)](./image/Screenshot 2020-03-02 at 11.25.44.png)
-<small>[Picture: Argelaguet *et al* (2020)](https://www.embopress.org/doi/10.15252/msb.20178124)</small>
+<small>[Picture: Argelaguet *et al* (2018)](https://www.embopress.org/doi/10.15252/msb.20178124)</small>
 
 ---
 
@@ -86,14 +89,14 @@ Schedule
 
 <div style="text-align: left"> 
 **Day2**\
-15:45-16:45: [1:00] **Session 2.1** - Introduction to the methods\
-16:45-17:00: [0:15] *Break*\
-17:00-17:45: [1:00] **Session 2.2** - Data exploration and training the models\
+15:00-16:00: [1:00] **Session 2.1** - Introduction to the methods\
+16:00-16:15: [0:15] *Break*\
+16:15-18:00: [1:45] **Session 2.2** - Data exploration and training the models
 
 **Day3**\
-14:30-15:30: [1:00] **Session 3.1** - Benchmarking on association with clinical annotations\
-15:30-16:00: [0:30] *Break*\
-16:00-17:30: [1:30] **Session 3.2** - Benchmarking on association with biological annotations\
+15:30-16:15: [0:45] **Session 3.1** - Benchmarking on association with clinical annotations\
+16:15-16:30: [0:15] *Break*\
+16:30-17:30: [1:00] **Session 3.2** - Benchmarking on association with biological annotations\
 </div>
 ---
 
@@ -101,18 +104,17 @@ Schedule
 
 <div style="text-align: left"> 
 **Day4**\
-14:30-15:30: [1:00] **Session 4.1** - Benchmarking on prediction of survival outcomes\
-15:30-16:00: [0:30] *Break*\
-16:00-17:00: [1:00] **Session 4.2** - Understanding advantages and limitations of these tools\
-17:00-17:30: [0:45] *Preparing presentation*\
+16:15-17:00: [0:45] **Session 4.1** - Benchmarking on prediction of survival outcomes\
+17:00-17:15: [0:15] *Break*\
+17:15-18:00: [0:45] **Session 4.2** - Preparing presentation (advantages and limitations of these tools)\
 </div>
 
 ---
 
 Getting started
 
-- All resources are available at <small>[https://github.com/Manikgarg/MultiOmicsDataIntegrationCourse2020](https://github.com/Manikgarg/MultiOmicsDataIntegrationCourse2020)</small>
+- All resources are available at <small>[https://github.com/Manikgarg/MultiOmicsDataIntegrationCourse2021](https://github.com/Manikgarg/MultiOmicsDataIntegrationCourse2021)</small>
 - Navigate to the project directory via terminal
 - Type `git pull` to make sure the files are up-to-date
 - Follow along
-- Use <span style="color:red">red</span> sticker to ask for help
+- Raise hand or un-mute yourself to ask for help

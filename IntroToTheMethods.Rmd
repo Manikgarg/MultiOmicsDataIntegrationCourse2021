@@ -1,7 +1,7 @@
 ---
 title: "Introduction to the methods"
 author: "Manik Garg"
-date: "03/03/2020"
+date: "22/02/2021"
 output: 
   revealjs::revealjs_presentation:
     #theme: simple
@@ -12,20 +12,21 @@ output:
     #background-transition: slide
 ---
 
-Multi-omics factor analysis (MOFA)
-
 ![Argelaguet *et al* (2018)](./image/Screenshot 2020-03-02 at 11.25.44.png)
-<small>[Picture: Argelaguet *et al* (2020)](https://www.embopress.org/doi/10.15252/msb.20178124)</small>
+<small>[Picture: Argelaguet *et al* (2018)](https://www.embopress.org/doi/10.15252/msb.20178124)</small>
 
 ---
 
-MOFA
+MOFA+
 
 - Extension of Factor Analysis
 - Doesn't require data imputation
 - Finds a shared factor matrix
-- Number of factors can be estimated by providing variance threshold
-- Implemented as Bioconductor package `mofa`: <small>[https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf](https://bioconductor.org/packages/release/bioc/manuals/MOFA/man/MOFA.pdf)</small>
+- Number of factors can be estimated
+- Faster than MOFA with multi-group analysis
+- Implemented as Bioconductor package `MOFA2`
+- More info on:\
+<small>[https://biofam.github.io/MOFA2/index.html](https://biofam.github.io/MOFA2/index.html)</small>
 
 ---
 
@@ -48,8 +49,8 @@ JIVE
 
 Multiple co-inertia analysis (MCIA)
 
-- Extension of Co-intertia Analysis
+- Extension of Co-inertia Analysis
 - Requires data imputation
-- Finds omics-specific factor matrices but tries to maximize co-intertia between them
+- Finds omics-specific factor matrices but tries to maximize co-inertia between them
 - Number of factors (axes) can be selected interactively from the scree-plot
 - Implemented as Bioconductor package `omicade4`: <small>[https://www.bioconductor.org/packages/release/bioc/manuals/omicade4/man/omicade4.pdf](https://www.bioconductor.org/packages/release/bioc/manuals/omicade4/man/omicade4.pdf)</small>
