@@ -84,8 +84,8 @@ To confirm whether your identified factors can successfully divide patients into
 ```{r}
 IGHV <- factor(clinicalData$IGHV)
 trisomy12 <- factor(clinicalData$trisomy12)
-methodName <- "MOFA"
-ggplot(data.frame(factorsList[[methodName]]), aes(x = Factor1, y = Factor2, 
+methodName <- "MCIA"
+ggplot(data.frame(factorsList[[methodName]]), aes(x = Factor1, y = Factor3, 
                                                   colour = IGHV, shape = trisomy12)) +
   geom_point()+ 
   ggtitle(methodName)
@@ -99,9 +99,9 @@ As described in the [MOFA vignette](https://bioconductor.org/packages/devel/bioc
 
 We also noticed that in JIVE, multiple factors have given highest weights to IGHV status and trisomy12, thereby implying that the factors are capturing similar clinical information and are not exclusive to each other. To quantify the independence of each factor in representing biological information, a selectivity score was devised by Laura et al. (2020) given by:
 
-$$Selectivity\;Score = 2 (\frac{N_c+N_f}{L})$$
+$$Selectivity\;Score = (\frac{N_c+N_f}{2L})$$
 
-Where N<sub>c</sub> is the total number of clinical annotations associated with atleast one factor, N<sub>f</sub> is the total number of factors accosiated with at least one clinical annotation, and L is the total number of associations between clinical anotations and factors.
+Where N<sub>c</sub> is the total number of clinical annotations associated with atleast one factor, N<sub>f</sub> is the total number of factors accosiated with at least one clinical annotation, and L is the total number of associations between clinical annotations and factors.
 
 #### Extract the selectivity results for each method
 

@@ -110,7 +110,9 @@ Note that the following sections are derived from the momix pipeline[https://git
 #conv="default" is used
 #maxiter=100 is used in the interest of time.
 #Feel free to explore various parameter options from the r.jive manual
-JIVEfactorization <- jive(CLL_data_imputed, rankJ=numFactors, rankA = rep(numFactors, length(CLL_data_imputed)), method = "given", conv = "default", maxiter = 100, showProgress=TRUE)
+set.seed(42)
+JIVEfactorization <- jive(CLL_data_imputed, rankJ=numFactors, rankA = rep(numFactors, length(CLL_data_imputed)), method = "given", conv = "default", maxiter = 1000, showProgress=TRUE,
+                          scale = FALSE, center = TRUE)
 ```
 
 #### Extract weights
